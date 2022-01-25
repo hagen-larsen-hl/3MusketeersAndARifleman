@@ -1,7 +1,7 @@
-# Name of our Project goes here
+# Hustle
 
 ## Project Overview
-This project will provide a system for a community to use to schedule and perform yardwork. This system will allow customers to submit a job they need done from the following types: Lawn Mowing, Leaf Raking, and Snow Shoveling. Employees of this system will be able to accept jobs and recieve an agreed upon wage from the customer for doing said job. Both the customer and the employee will be able to review each other and prevent doing business together again if needed. 
+This project will provide a system for a community to use to schedule and perform yardwork. This system will allow customers to submit a job they need done from the following types: Lawn Mowing, Leaf Raking, and Snow Shoveling. Employees of this system will be able to accept jobs and recieve an agreed upon wage from the customer for doing said job. Both the customer and the employee will be able to review each other.
 
 ## Team Organization
 Project Manager: Bennett DenBleyker (Subject to change during different sprints)
@@ -42,11 +42,14 @@ Github - Formal platform used for communication with Dan Watson and Rob Johnson 
  - Customer Confidentiality:
     - Likelihood: Low
     - Severity: Med
-    - Consequence: Customer information being accessible by users other than the employee who accepts the job is a confidentiality issue for the customer. For example, the exact address of the job.
-    - Work-Around: Only allow exact information about a customer to become available to the employee who accepts the job after they accept it. Allow zip code to be seen before acceptance of the job.
+    - Consequence: Customer information being accessible by users other than the employee who accepts the job is a confidentiality issue for the customer. For example, the contact information for the customer.
+    - Work-Around: Only allow exact contact information about a customer to become available to the employee who accepts the job after they accept it. Allow address to be seen before acceptance of the job.
 
  - Database Structure:
     - Likelihood: Low
     - Severity: High
     - Consequences: Inaccurate database administration would lead to issues with account balances, employee schedules, and user reviews.
     - Work-Around: N/A. The application will not be able to function without an adequate database structure and proper database administration. 
+
+    ## Configuration Management Plan 
+    Reference the README.md file for the configuration management plan. 
