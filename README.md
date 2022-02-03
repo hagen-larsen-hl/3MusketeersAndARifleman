@@ -70,4 +70,14 @@ that the app is running, open an internet browser and enter the address localhos
 
 ## Other Development Notes
 
+### Naming Conventions
+#### The naming conventions for variables, functions, classes, and everything else (subject to change)
+- Variables: normalVariableName, CONSTANT_VARIABLE_NAME
+- functions/methods: normalFunctionName(), normalMethodName()
+- classes: NormalClassName
+#### How commenting will work (subject to change)
+- Before every class describing what the class does
+- Before every method and function describing what they do
+- leave TODO comments on unfinished parts of code metioning what still needs to be done
+
 
