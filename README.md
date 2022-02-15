@@ -6,7 +6,7 @@
 
 The app will be stored in this repository along with the documentation of the design process and the documentation of the app. The documentation for both can be found in the folder called "docs".
 
-The actal app will be in the folder called "app"
+The actal app will be in the folder called "hustle"
 
 ## Version-Control Procedures
 
@@ -20,46 +20,15 @@ Django will be used to create and manage the web apps database. Django uses pyth
 
 Clone the project in gitbash. ``` bash $ git clone https://github.com/yodarocks1/3MusketeersAndARifleman ```
 
-The next steps are basic Django setup instructions and are subject to change.
+The next steps are basic Django setup instructions and are subject to change (The app isn't built yet).
 
-- Create and start a virtual environment ``` bash $ virtualenv --no-site-packages ```
-
-- Install the project dependencies ``` bash $ pip install -r requirements.txt ```
-
-- Create a file named "secret.sh" ``` bash touch secrets.sh ```
-
-- Obtain a secret from MiniWebTool key and add to secret.sh ```bash export SECRET_KEY='<secret_key>'```
-
-- Add secret.sh to .gitignore file Create a postgres db and add the credentials to settings.py
-```
-
-DATABASES = {
-    'default':  {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_name',
-        'USER': 'name',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '', 
-        }
-    }
-
-```
-- Migrate in bash ``` bash $ python manage.py migrate ```
-
-- Create an admin account ``` bash $ python manage.py createsuperuser ```
-
-- Then complete migrations ``` bash $ python manage.py makemigrations group-7 ```
-
-- Then migrate again ``` bash $ python manage.py migrate ```
-
-- and finally ``` bash $ python manage.py runserver ```
+- run ``` bash $ python manage.py runserver ```
 
 - Type localhost:8000 in a browser to see the app running
 
 ## Unit Testing Instructions
 
-Unit tests will cover all use cases laid out in the use case diagrams. Once they are implemented they will be in the "apps" folder under "unitTests"
+Unit tests will cover all use cases laid out in the use case diagrams. Once they are implemented they will be in the "hustle" folder under "unitTests"
 
 ## System Testing Instructions
 
