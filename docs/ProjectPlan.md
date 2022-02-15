@@ -4,9 +4,12 @@
 This project will provide a system for a community to use to schedule and perform yardwork. This system will allow customers to submit a job they need done from the following types: Lawn Mowing, Leaf Raking, and Snow Shoveling. Employees of this system will be able to accept jobs and recieve an agreed upon wage from the customer for doing said job. Both the customer and the employee will be able to review each other.
 
 ## Team Organization
-Project Manager: Bennett DenBleyker (Subject to change during different sprints)
 
-Developers: Jacob Haight, Hagen Larsen, Jade Blunt
+Developers: Jacob Haight, Hagen Larsen, Jade Blunt, Bennett DenBleyker
+
+Scrum Master Milestone 1: Bennett DenBleyker
+
+Scrum Master Milestone 2: Jade Blunt
 
 ## Software Development Process
 The software development process will be broken up into four phases. Each phase will be a little like a Sprint in an Agile method and a little like an iteration in a Spiral process. Specifically, each phase will be like a Sprint, in that work to be done will be organized into small tasks, placed into a sprint backlog, and prioritized. Then, using on time-box scheduling, the team will decide which tasks the phase (Sprint) will address. The team will use a GitHub Repository to keep track of tasks (issues) in the product backlog. Those tasks that will be part of the current Sprint will be kept in the GitHub Project, those in progress, and those that are done.
@@ -51,5 +54,5 @@ Github - Formal platform used for communication with Dan Watson and Rob Johnson 
     - Consequences: Inaccurate database administration would lead to issues with account balances, employee schedules, and user reviews.
     - Work-Around: N/A. The application will not be able to function without an adequate database structure and proper database administration. 
 
-    ## Configuration Management Plan 
+## Configuration Management Plan 
     Reference the README.md file for the configuration management plan. 
