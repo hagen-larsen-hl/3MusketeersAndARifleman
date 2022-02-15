@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<!--Login-->
+<div class="d-flex justify-content-center">
+  <div class="card m-5">
+    <div class="card-header">
+      Login to your account
+    </div>
+    <div class="card-body">
+      <h1>Login</h1>
+      <form method="POST">
+        {% csrf_token %}
+        {{ login_form }}
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+      <p class="text-center">Don't have an account? <a href="/main/register">Create an account</a>.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
