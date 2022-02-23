@@ -2,25 +2,32 @@
 
 {% block content %}
 
-{% load crispy_forms_tags %}
-
-<!--Login-->
-
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for complaint in complaints %}
-    <div class="col">
-      <div class="card">
-        <div class="card-header">
-            <p style="float: left;">Ref: {{ complaint.id }}</p>
-            <p style="float: right;">Created {{ complaint.create_date }}</p>
-            <div style="clear: both;"></div>
-        </div>
-        <div class="card-body">
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        </div>
-      </div>
+<div class="card m-3">
+    <div class="card-header">
+        <h1>My Complaints</h1>
     </div>
-    {% endfor %}
-  </div>
+    <div class="card-body">
+        <!--Complaint Cards-->
+        <div class="row row-cols-1 row-cols-md-3 g-4 w-75 m-3">
+            {% for complaint in complaints %}
+            <div class="col">
+              <div class="card m-1">
+                <div class="card-header">
+                    <p style="float: left;">Ref: {{ complaint.id }}</p>
+                    <p style="float: right;">Created {{ complaint.create_date }}</p>
+                    <div style="clear: both;"></div>
+                </div>
+                <div class="card-body">
+                    <label for="reason{{ complaint.id }}">Reason</label>
+                    <input disabled id="reason{{ complain.id }}">{{ complaint.reason. }}</p>
+                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+    </div>
+</div>
+
 
 {% endblock %}
