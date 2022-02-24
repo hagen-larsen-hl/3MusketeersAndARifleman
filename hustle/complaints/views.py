@@ -26,7 +26,9 @@ def create(request):
 
 def view(request):
     if request.user.is_authenticated:
-        complaints = Complaint.objects.filter(user=request.user)
-        return render(request=request, template_name="complaints/view_all.html", context={"complaints": complaints})
+        open_complaints = Complaint.objects.filter(user=request.user, state='open')
+        reimbursed_complaints = Complaint.objects.filter(user=request.user, state='reimbursed')
+        closed_complaints = Complaint.objects.filter(user=request.user, state='closed')
+        return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints})
     else:
         return redirect("main:login")
