@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from jobs.forms import NewJobForm
 
-def post_job(request):
-    return render(request, 'templates/job_form.html')
+
+def create_job_request(request):
+    form = NewJobForm()
+    return render(request=request, template_name='jobs/job_form.html', context={"create_job_form": form})

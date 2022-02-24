@@ -1,18 +1,19 @@
 {% extends "main/base.html" %}
-{% load crispy_forms_filters %}
+
 {% block content %}
+
 {% load crispy_forms_tags %}
 
 <!--Post a Job-->
 <div class="d-flex justify-content-center container-sm">
-    <div class="card m-5">
+    <div class="card m-5 w-50" >
         <div class="card-header bg-success text-white">
             Post a Job
         </div>
         <div class="card-body">
             <form method="POST">
                 {% csrf_token %}
-                {% for field in job_form %}
+                {% for field in create_job_form %}
                 <div class="fieldWrapper">
                     {{ field|as_crispy_field }}
                 </div>
