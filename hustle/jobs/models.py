@@ -1,12 +1,9 @@
 from django.db import models
-
-
-class User(models.Model):
-    pass
+from django.contrib.auth.models import User
 
 
 class JobType(models.Model):
-    pass
+    type = models.CharField(name="type")
 
 
 class Job(models.Model):
