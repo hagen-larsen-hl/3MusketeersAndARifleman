@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class JobType(models.Model):
-    type = models.CharField(name="type")
+    type = models.CharField(name="type", max_length=30, default="Lawn")
 
 
 class Job(models.Model):
