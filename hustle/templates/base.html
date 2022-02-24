@@ -9,7 +9,7 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <!-- Load Global Stylesheet -->
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static '/stylesheet.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheet.css' %}" />
     <title>Hustle</title>
 </head>
 
@@ -46,7 +46,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link disabled">Coming Soon</a>
+                            <a class="nav-link" href="{{ url }}/complaints/view">Complaints</a>
                         </li>
                     </ul>
                     <form class="d-flex">
