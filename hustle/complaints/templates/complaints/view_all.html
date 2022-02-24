@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card m-3 w-75">
+    <div class="card-header">
+        <h2 style="display: inline-block">My Complaints</h2>
+        <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/complaints/create">Create New</a>
+    </div>
+    <div class="card-body">
+        <!--Complaint Cards-->
+        <div class="accordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="open_complaints_section_header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#open_complaints_section" aria-expanded="false" aria-controls="open_complaints_section">
+                <strong>Open ({{ open_complaints.count }})</strong>
+              </button>
+            </h2>
+            <div id="open_complaints_section" class="accordion-collapse collapse" aria-labelledby="open_complaints_section_header">
+              <div class="accordion-body">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                  {% for complaint in open_complaints %}
+                  <div class="col">
+                    <div class="card m-1">
+                      <div class="card-header">
+                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
+                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
+                      </div>
+                      <div class="card-body">
+                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
+                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
+                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="closed_complaints_section_header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#closed_complaints_section" aria-expanded="false" aria-controls="closed_complaints_section">
+                <strong>Closed ({{ closed_complaints.count }})</strong>
+              </button>
+            </h2>
+            <div id="closed_complaints_section" class="accordion-collapse collapse" aria-labelledby="closed_complaints_section_header">
+              <div class="accordion-body">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                  {% for complaint in closed_complaints %}
+                  <div class="col">
+                    <div class="card m-1">
+                      <div class="card-header">
+                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
+                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
+                      </div>
+                      <div class="card-body">
+                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
+                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
+                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="reimbursed_complaints_section_header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reimbursed_complaints_section" aria-expanded="false" aria-controls="reimbursed_complaints_section">
+                <strong>Reimbursed ({{ reimbursed_complaints.count }})</strong>
+              </button>
+            </h2>
+            <div id="reimbursed_complaints_section" class="accordion-collapse collapse" aria-labelledby="reimbursed_complaints_section_header">
+              <div class="accordion-body">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                  {% for complaint in reimbursed_complaints %}
+                  <div class="col">
+                    <div class="card m-1">
+                      <div class="card-header">
+                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
+                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
+                      </div>
+                      <div class="card-body">
+                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
+                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
+                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
