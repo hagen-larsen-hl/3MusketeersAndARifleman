@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'jobs.apps.JobsConfig',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
