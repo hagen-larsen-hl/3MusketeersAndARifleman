@@ -3,3 +3,4 @@ from .models import JobType
 # Register your models here.
 
 admin.site.register(JobType)
+

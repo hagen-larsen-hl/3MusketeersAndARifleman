@@ -1,7 +1,18 @@
 from django.db import models
 
-# Create your models here.
+from django.contrib.auth.models import User
 
-# This is the module for the jobtype object it isn't done yet
+
 class JobType(models.Model):
-    typeName = models.CharField(max_length=200)
+    type = models.CharField(name="type", max_length=30, default="Lawn")
+
+
+class Job(models.Model):
+    time_estimate = models.DurationField(name="time_estimate")
+    zip_code = models.CharField(name="zip_code", max_length=10)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    bid = models.DecimalField(max_digits=2, decimal_places=2)
+    complete = models.BooleanField
+    completion_window_start = models.DateField(name="completion_window_start")
+    completion_window_end = models.DateField(name="completion_window_end")
+    type = models.ForeignKey(JobType, on_delete=models.CASCADE)
