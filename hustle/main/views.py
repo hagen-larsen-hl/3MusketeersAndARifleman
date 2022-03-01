@@ -8,14 +8,12 @@ from django.contrib.auth.forms import AuthenticationForm
 def register_request(request):
 	if request.method == "POST":
 		form = NewUserForm(request.POST)
-		print(form)
 		if form.is_valid():
 			user = form.save()
 			login(request, user)
-			messages.success(request, "Registration successful." )
 			return redirect("main:profile")
-		messages.error(request, "Unsuccessful registration. Invalid information.")
-	form = NewUserForm()
+	else:
+		form = NewUserForm()
 	return render(request=request, template_name="main/register.html", context={"register_form": form})
 
 
@@ -34,7 +32,8 @@ def login_request(request):
 				messages.error(request,"Invalid username or password.")
 		else:
 			messages.error(request,"Invalid username or password.")
-	form = AuthenticationForm()
+	else:
+		form = AuthenticationForm()
 	return render(request=request, template_name="main/login.html", context={"login_form":form})
 
 
