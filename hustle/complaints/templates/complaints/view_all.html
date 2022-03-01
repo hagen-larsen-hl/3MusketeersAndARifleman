@@ -4,7 +4,11 @@
 
 <div class="card m-3 w-75">
     <div class="card-header">
-        <h2 style="display: inline-block">My Complaints</h2>
+        {% if all %}
+          <h2 style="display: inline-block">All Complaints</h2>
+        {% else %}
+          <h2 style="display: inline-block">My Complaints</h2>
+        {% endif %}
         <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/complaints/create">Create New</a>
     </div>
     <div class="card-body">
