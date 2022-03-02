@@ -25,7 +25,8 @@
                       <div class="card-header">
                           <h5 class="my-2" style="float: left">Job #{{ job.id }}</h5>
                           <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ job.get_state_display }}</span></h5>
-                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job_id }}">Edit</a>
+                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/update/{{ job.id }}">Edit</a>
+                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
                       </div>
                       <div class="card-body">
                         <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>

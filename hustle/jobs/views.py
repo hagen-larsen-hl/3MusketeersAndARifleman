@@ -58,3 +58,14 @@ def update_job_request(request, job_id):
         return render(request=request, template_name='jobs/edit_job_form.html', context={"create_job_form": form})
     else:
         return redirect("main:login")
+
+
+def view_job(request, job_id):
+    if request.user.is_authenticated:
+        try:
+            job = Job.objects.get(pk=job_id)
+        except Job.DoesNotExist:
+            return redirect("jobs:view")
+        return render(request=request, template_name='jobs/view_job.html', context={"job": job})
+    else:
+        return redirect("main:login")
