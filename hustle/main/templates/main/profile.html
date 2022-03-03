@@ -2,14 +2,88 @@
 
 {% block content %}
 
+{% load crispy_forms_tags %}
 <!--Register-->
 <div class="d-flex justify-content-center">
+    {% if deposit %}
+    <div class="position-fixed card w-25 mt-4 shadow border-success" style="z-index: 10">
+        <div class="card-header">
+            <h1 class="text-success">Deposit</h1>
+        </div>
+        <div class="m-2">
+            <form method="POST" class="m-2">
+                {% csrf_token %}
+                {% for field in money_form %}
+                <div class="fieldWrapper mb-2">
+                  {{ field|as_crispy_field }}
+                </div>
+                {% endfor %}
+                <button class="btn m-2 btn-primary btn-lg" type="submit">Confirm</button>
+                <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
+            </form>
+        </div>
+    </div>
+    {% elif withdraw %}
+    <div class="position-fixed card w-25 mt-4 shadow border-danger" style="z-index: 10">
+        <div class="card-header">
+            <h1 class="text-danger">Withdraw</h1>
+        </div>
+        <div class="m-2">
+            <form method="POST" class="m-2">
+                {% csrf_token %}
+                {% for field in money_form %}
+                <div class="fieldWrapper mb-2">
+                  {{ field|as_crispy_field }}
+                </div>
+                {% endfor %}
+                <button class="btn m-2 btn-primary btn-lg" type="submit">Confirm</button>
+                <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="card w-100 m-5">
         <div class="card-header">
-            <h2>Welcome, {{ user.first_name }}!</h1>
+            <h1>Welcome, {{ user.first_name }}!</h1>
         </div>
         <div class="card-body justify-content-center">
-            <p>This is where your profile will be.</p>
+            {% if edit %}
+                <form method="POST" class="m-2">
+                    {% csrf_token %}
+                    {% for field in edit_form %}
+                        <div class="fieldWrapper mb-2">
+                          {{ field|as_crispy_field }}
+                        </div>
+                    {% endfor %}
+                    <button class="btn m-2 btn-primary btn-lg" type="submit">Save</button>
+                    <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
+                </form>
+            {% else %}
+               <h3>
+                    <p>User Name: {{ user.username}}</p>
+                    <p>First Name: {{ user.first_name }}</p>
+                    <p>Last Name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
+               </h3>
+                <a class="btn m-2 btn-success btn-lg" href="/main/edit">Edit</a>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="card w-50 m-5">
+        <div class="card-header justify-content-center">
+            {% if user.data.money < 0 %}
+                <h1 class="text-danger">
+            {% else %}
+                    <h1>
+            {% endif %}
+              Balance: {{ user.data.money }}
+                    </h1>
+        </div>
+        <div>
+            <a class="btn m-2 btn-success btn-lg" type="submit" href="/main/deposit">Deposit</a>
+            <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main/withdraw">Withdraw</a>
         </div>
     </div>
 </div>

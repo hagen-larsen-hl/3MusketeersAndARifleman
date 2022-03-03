@@ -1,4 +1,5 @@
 from django.db import models
+
 from django.contrib.auth.models import User
 
 
@@ -15,5 +16,3 @@ class Job(models.Model):
     completion_window_start = models.DateField(name="completion_window_start")
     completion_window_end = models.DateField(name="completion_window_end")
     type = models.ForeignKey(JobType, on_delete=models.CASCADE)
-
-

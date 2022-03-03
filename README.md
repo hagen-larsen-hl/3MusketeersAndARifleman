@@ -20,11 +20,17 @@ Django will be used to create and manage the web apps database. Django uses pyth
 
 Clone the project in gitbash. ``` bash $ git clone https://github.com/yodarocks1/3MusketeersAndARifleman ```
 
-The next steps are basic Django setup instructions and are subject to change (The app isn't built yet).
+The next steps are subject to change.
+
+- run ``` pip install django-crispy-forms ```
+
+- run ``` python manage.py makemigrations ```
+
+- run ``` python manage.py migrate ```
 
 - run ``` bash $ python manage.py runserver ```
 
-- Type localhost:8000 in a browser to see the app running
+- Type localhost:8000\main in a browser to see the app running
 
 ## Unit Testing Instructions
 
@@ -35,7 +41,7 @@ Unit tests will cover all use cases laid out in the use case diagrams. Once they
 Once the app is implemented this is what you will use to start up the project to start testing it.
 
 Start by running an instance of the web app by first entering the correct repository and then by entering the following bash $ python manage.py runserver  Now
-that the app is running, open an internet browser and enter the address localhost:8000. The testing username and pasword will be described later but will allow the user to test every system in the app.
+that the app is running, open an internet browser and enter the address localhost:8000\main. The testing username and pasword will be described later but will allow the user to test every system in the app.
 
 ## Other Development Notes
 
