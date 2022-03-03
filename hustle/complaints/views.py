@@ -29,6 +29,16 @@ def view(request):
         open_complaints = Complaint.objects.filter(user=request.user, state='open')
         reimbursed_complaints = Complaint.objects.filter(user=request.user, state='reimbursed')
         closed_complaints = Complaint.objects.filter(user=request.user, state='closed')
-        return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints})
+        return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": False})
+    else:
+        return redirect("main:login")
+
+
+def viewAll(request):
+    if request.user.is_authenticated:
+        open_complaints = Complaint.objects.filter(state='open')
+        reimbursed_complaints = Complaint.objects.filter(state='reimbursed')
+        closed_complaints = Complaint.objects.filter(state='closed')
+        return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": True})
     else:
         return redirect("main:login")
