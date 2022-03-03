@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!--View Job-->
+<div class="d-flex justify-content-center">
+    <div class="card w-50 m-5">
+        <div class="card-header">
+            <h2>Job# {{ job.id }}</h2>
+        </div>
+        <div class="card-body justify-content-center">
+            <p>Type: {{ job.type }}</p>
+            <p>Bid: {{ job.bid }}</p>
+            <p>Time Estimate: {{ job.time_estimate }}</p>
+            <p>Completion Window Start: {{ job.completion_window_start }}</p>
+            <p>Completion Window End: {{ job.completion_window_end }}</p>
+            <p>Completed: <input type="checkbox" disabled {% if job.complete %}checked{% endif %}></p>
+            <p>Zip Code: {{ job.zip_code }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
