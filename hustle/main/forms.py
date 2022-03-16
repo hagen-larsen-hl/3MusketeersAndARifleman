@@ -104,7 +104,6 @@ class NewUserForm(UserCreationForm):
         self.user_data = {
             "user": user,
             "phone_number": self.cleaned_data.get("phone_number"),
-            "balance": 0,
         }
 
         if self.cleaned_data.get("account_type") == "customer":
