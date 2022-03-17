@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'complaints',
     'main',
     'jobs',
+    'reviews',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
