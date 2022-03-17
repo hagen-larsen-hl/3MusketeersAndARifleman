@@ -69,3 +69,11 @@ def view_job(request, job_id):
         return render(request=request, template_name='jobs/view_job.html', context={"job": job})
     else:
         return redirect("main:login")
+
+def view_all_jobs(request):
+    if request.user.is_authenticated:
+        jobs = Job.objects.all()
+
+        return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs})
+    else:
+        return redirect("main:login")
