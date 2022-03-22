@@ -12,5 +12,8 @@
         <p id="time_estimate{{ job.id }}"><strong>Time Estimate:</strong> {{ job.time_estimate }}</p>
         <p id="bid{{ job.id }}"><strong>Bid:</strong> {{ job.bid }}</p>
       </div>
+      <div class="card-footer">
+        <a class="btn btn-secondary" id="review" href="{{ url }}/reviews/create">Leave Review</a>
+      </div>
     </div>
   </div>
