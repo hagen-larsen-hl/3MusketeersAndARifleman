@@ -4,7 +4,7 @@ from localflavor.us.models import USZipCodeField, USStateField
 
 class UserData(models.Model):
     user = models.OneToOneField(User, verbose_name="User", related_name="data", on_delete=models.CASCADE, primary_key=True)
-    phone_number = models.CharField(max_length=16, unique=True)
+    phone_number = models.CharField(max_length=16)
     money = models.DecimalField(max_digits=10,decimal_places=2,default=0.0)
 
 class CustomerData(models.Model):
@@ -16,5 +16,5 @@ class CustomerData(models.Model):
     state = USStateField()
     zip_code = USZipCodeField()
 
-#class WorkerData(models.Model):
-#    pass
+class WorkerData(models.Model):
+    user = models.OneToOneField(User, verbose_name="User", related_name="worker_data", on_delete=models.CASCADE, primary_key=True)
