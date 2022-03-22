@@ -4,8 +4,10 @@ from .forms import NewUserForm, MoneyForm, EditUser
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from main.auth import user_not_authenticated, user_is_authenticated
 
 
+@user_not_authenticated()
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -18,6 +20,7 @@ def register_request(request):
     return render(request=request, template_name="main/register.html", context={"register_form": form})
 
 
+@user_not_authenticated()
 def login_request(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -44,12 +47,11 @@ def logout_request(request):
     return redirect("main:login")
 
 
+@user_is_authenticated()
 def profile(request):
-    if request.user.is_authenticated:
-        return render(request, 'main/profile.html', {})
-    else:
-        return redirect("main:login")
+    return render(request, 'main/profile.html', {})
 
+@user_is_authenticated()
 def other_profile(request,user_id):
     if request.user.is_authenticated:
         if user_id == request.user.id:
@@ -61,41 +63,33 @@ def other_profile(request,user_id):
         return redirect("main:login")
 
 
+@user_is_authenticated()
 def deposit_money(request):
-    if request.user.is_authenticated:
-        form = MoneyForm(data=request.POST)
-        if form.is_valid():
-            request.user.data.money += form.cleaned_data['money']
-            request.user.data.save()
-            return redirect("main:profile")
-        return render(request, 'main/profile.html', {"deposit": True, "money_form": form})
-    else:
-        return redirect("main:login")
+    form = MoneyForm(data=request.POST)
+    if form.is_valid():
+        request.user.data.money += form.cleaned_data['money']
+        request.user.data.save()
+        return redirect("main:profile")
+    return render(request, 'main/profile.html', {"deposit": True, "money_form": form})
 
 
+@user_is_authenticated()
 def withdraw_money(request):
-    if request.user.is_authenticated:
-        form = MoneyForm(data=request.POST)
-        if form.is_valid():
-            request.user.data.money -= form.cleaned_data['money']
-            request.user.data.save()
-            return redirect("main:profile")
-        return render(request, 'main/profile.html', {"withdraw": True, "money_form": form})
-    else:
-        return redirect("main:login")
+    form = MoneyForm(data=request.POST)
+    if form.is_valid():
+        request.user.data.money -= form.cleaned_data['money']
+        request.user.data.save()
+        return redirect("main:profile")
+    return render(request, 'main/profile.html', {"withdraw": True, "money_form": form})
 
-
+@user_is_authenticated()
 def edit_user(request):
-    if request.user.is_authenticated:
+    form = EditUser(instance=request.user)
 
-        form = EditUser(instance=request.user)
+    if request.method == "POST":
+        form = EditUser(data=request.POST,instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("main:profile")
+    return render(request, 'main/profile.html', {"edit": True, "edit_form": form})
 
-        if request.method == "POST":
-            form = EditUser(data=request.POST,instance=request.user)
-            if form.is_valid():
-                form.save()
-                return redirect("main:profile")
-        return render(request, 'main/profile.html', {"edit": True, "edit_form": form})
-
-    else:
-        return redirect("main:login")
