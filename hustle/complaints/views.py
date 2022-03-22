@@ -1,5 +1,7 @@
 from xmlrpc.client import DateTime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+
+from main.models import UserData
 from .forms import ComplaintForm
 from .models import Complaint
 from django.contrib import messages
@@ -35,8 +37,55 @@ def view(request):
 
 @user_is_authenticated()
 @user_in_group("Owner")
+def viewOne(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    return render(request, 'complaints/view_one.html', {'complaint': complaint})
+
+
+@user_is_authenticated()
+@user_in_group("Owner")
 def viewAll(request):
     open_complaints = Complaint.objects.filter(state='open')
     reimbursed_complaints = Complaint.objects.filter(state='reimbursed')
     closed_complaints = Complaint.objects.filter(state='closed')
-    return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": True})
+    return render(request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": True})
+
+
+@user_is_authenticated()
+@user_in_group("Owner")
+def reimburse(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    user = get_object_or_404(UserData, pk=complaint.user)
+    if complaint.state != "reimbursed":
+        user.money += 200
+        user.save()
+        complaint.state = "reimbursed"
+        complaint.save()
+    else:
+        messages.error(request, "This complaint is not eligible for reimbursement.")
+
+    return render(request, "complaints/view_one.html", {"complaint": complaint})
+
+
+@user_is_authenticated()
+@user_in_group("Owner")
+def close(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    if complaint.state != "closed":
+        complaint.state = "closed"
+        complaint.save()
+    else:
+        messages.error(request, "This complaint cannot be closed.")
+    return redirect("complaints:viewOne", complaint_id=complaint.id)
+
+
+@user_is_authenticated()
+@user_in_group("Customer")
+def open(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    if complaint.state != "open":
+        complaint.state = "open"
+        complaint.save()
+    else:
+        messages.error(request, "This complaint cannot be re-opened.")
+    return redirect("complaints:viewOne", complaint_id=complaint.id)

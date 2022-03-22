@@ -24,17 +24,19 @@ def user_passes_test(test_func, su_passes=True):
         return _wrapper_view
     return decorator
 
-def user_is_authenticated():
+def user_is_authenticated(su_passes=True):
     return user_passes_test(
-        lambda request: None if request.user.is_authenticated else redirect("main:login")
+        lambda request: None if request.user.is_authenticated else redirect("main:login"),
+        su_passes=su_passes
     )
 
-def user_not_authenticated(redirect_to="main:profile"):
+def user_not_authenticated(redirect_to="main:profile", su_passes=False):
     return user_passes_test(
-        lambda request: redirect(redirect_to) if request.user.is_authenticated else None
+        lambda request: redirect(redirect_to) if request.user.is_authenticated else None,
+        su_passes=su_passes
     )
 
-def user_in_group(*groups, on_fail=HttpResponseForbidden):
+def user_in_group(*groups, on_fail=HttpResponseForbidden, su_passes=False):
     def _in_group(user, groups):
         if "Owner" in groups and user.is_superuser:
             return None
@@ -43,6 +45,7 @@ def user_in_group(*groups, on_fail=HttpResponseForbidden):
         else:
             return on_fail()
     return user_passes_test(
-        lambda request: _in_group(request.user, groups)
+        lambda request: _in_group(request.user, groups),
+        su_passes=su_passes
     )
 

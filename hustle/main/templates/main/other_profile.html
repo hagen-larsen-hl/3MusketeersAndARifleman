@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+<!--Register-->
+<div class="d-flex justify-content-center">
+    <div class="card w-100 m-5">
+        <div class="card-header">
+            <h1>{{ user.username }}</h1>
+        </div>
+        <div class="card-body justify-content-center">
+               <h3>
+                    <p>First Name: {{ user.first_name }}</p>
+                    <p>Last Name: {{ user.last_name }}</p>
+                    <p>Email: {{ user.email }}</p>
+               </h3>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -63,4 +63,9 @@ def view_job(request, job_id):
         job = Job.objects.get(pk=job_id)
     except Job.DoesNotExist:
         return redirect("jobs:view")
-    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "is_owner": job.request_from_owner(request)})
+    return render(request=request, template_name='jobs/view_job.html', context={"job": job})
+
+@user_is_authenticated()
+def view_all_jobs(request):
+    jobs = Job.objects.all()
+    return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs})

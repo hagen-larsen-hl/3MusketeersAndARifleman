@@ -141,15 +141,6 @@ class EditUser(forms.ModelForm):
         model = User
         fields = ("email", "username", "first_name", "last_name",)
 
-    # This is some weird code that lets you magically set the initial values of the form
-    # I found it here >>> https://www.peterbe.com/plog/initial-values-bound-django-form-rendered
-    # I think it works by taking all the initial inputs and repackages them into a un-bounded form
-    # that then lets you populate the initial values
-    def __init__(self, data, **kwargs):
-        initial = kwargs.get("initial", {})
-        data = MultiValueDict({**{k: [v] for k, v in initial.items()}, **data})
-        super().__init__(data, **kwargs)
-
 
 class MoneyForm(forms.ModelForm):
     money = forms.DecimalField(label="Amount", required=True, decimal_places=2)

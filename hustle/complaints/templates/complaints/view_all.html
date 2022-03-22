@@ -27,8 +27,8 @@
                   <div class="col">
                     <div class="card m-1">
                       <div class="card-header">
-                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
-                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
+                          <h5 class="mt-2" style="float: left">Complaint #{{ complaint.id }}</h5>
+                          <a class="btn btn-secondary" style="float: right;" href="{{ url }}/complaints/view/{{ complaint.id }}">Review</a>
                       </div>
                       <div class="card-body">
                         <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
