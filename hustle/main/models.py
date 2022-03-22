@@ -16,5 +16,5 @@ class CustomerData(models.Model):
     state = USStateField()
     zip_code = USZipCodeField()
 
-#class WorkerData(models.Model):
-#    pass
+class WorkerData(models.Model):
+    user = models.OneToOneField(User, verbose_name="User", related_name="worker_data", on_delete=models.CASCADE, primary_key=True)

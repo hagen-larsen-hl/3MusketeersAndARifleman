@@ -1,9 +1,9 @@
 from django import forms
 from django.utils.datastructures import MultiValueDict
 
-from .models import UserData
+from .models import UserData, CustomerData, WorkerData
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from localflavor import us
@@ -109,20 +109,26 @@ class NewUserForm(UserCreationForm):
         if self.cleaned_data.get("account_type") == "customer":
             self.customer_data = {
                 "user": user,
-                # **self.cleaned_data.get("address"), TODO: Fix
+                "street": self.cleaned_data.get("c_street"),
+                "street2": self.cleaned_data.get("c_street2"),
+                "city": self.cleaned_data.get("c_city"),
+                "state": self.cleaned_data.get("c_state"),
+                "zip_code": self.cleaned_data.get("c_zip_code"),
             }
-        #elif self.cleaned_data.get("account_type") == "worker":
-        #    self.worker_data = {
-        #        "user": user,
-        #    }
+        elif self.cleaned_data.get("account_type") == "worker":
+            self.worker_data = {
+                "user": user,
+            }
 
         if commit:
             user.save()
             UserData.objects.create(**self.user_data)
             if hasattr(self, "customer_data"):
                 CustomerData.objects.create(**self.customer_data)
-        #    if hasattr(self, "worker_data"):
-        #        WorkerData.objects.create(**self.worker_data)
+                user.groups.add(Group.objects.get(name='Customer'))
+            if hasattr(self, "worker_data"):
+                WorkerData.objects.create(**self.worker_data)
+                user.groups.add(Group.objects.get(name='Worker'))
         return user
 
 
