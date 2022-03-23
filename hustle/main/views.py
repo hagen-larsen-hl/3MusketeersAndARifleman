@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import User
+from .models import User, BlackList
 from .forms import NewUserForm, MoneyForm, EditUser
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
@@ -51,14 +51,20 @@ def logout_request(request):
 def profile(request):
     return render(request, 'main/profile.html', {})
 
+
 @user_is_authenticated()
-def other_profile(request,user_id):
+def other_profile(request, user_id):
     if request.user.is_authenticated:
         if user_id == request.user.id:
             return redirect("main:profile")
 
         current_user = User.objects.get(pk=user_id)
-        return render(request, 'main/other_profile.html', {"user": current_user})
+
+        l = BlackList.objects.filter(user=request.user, blacklisted_user=current_user)
+
+        alreadyBlackListed = len(l) >= 1
+
+        return render(request, 'main/other_profile.html', {"user": current_user, "bl": alreadyBlackListed})
     else:
         return redirect("main:login")
 
@@ -82,14 +88,31 @@ def withdraw_money(request):
         return redirect("main:profile")
     return render(request, 'main/profile.html', {"withdraw": True, "money_form": form})
 
+
 @user_is_authenticated()
 def edit_user(request):
     form = EditUser(instance=request.user)
 
     if request.method == "POST":
-        form = EditUser(data=request.POST,instance=request.user)
+        form = EditUser(data=request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect("main:profile")
     return render(request, 'main/profile.html', {"edit": True, "edit_form": form})
 
+
+@user_is_authenticated()
+def blacklist_user(request, other_user_id):
+    blackList = BlackList()
+    blackList.user = request.user
+    other_user = User.objects.get(pk=other_user_id)
+    blackList.blacklisted_user = other_user
+
+    l = BlackList.objects.filter(user=request.user, blacklisted_user=other_user)
+
+    if len(l) < 1:
+        blackList.save()
+    else:
+        l.delete()
+
+    return redirect(f'/main/profile/{other_user_id}/')

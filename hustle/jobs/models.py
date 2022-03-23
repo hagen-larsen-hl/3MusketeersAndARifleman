@@ -28,4 +28,4 @@ class Job(models.Model):
 class Bid(models.Model):
     bid = models.DecimalField(max_digits=100, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE
+    selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE)

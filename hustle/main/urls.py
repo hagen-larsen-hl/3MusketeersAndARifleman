@@ -14,6 +14,7 @@ urlpatterns = [
     path("withdraw/", views.withdraw_money, name="withdraw"),
     path("edit/", views.edit_user, name="edit"),
     path("profile/", views.profile, name="profile"),
-    path("profile/<int:user_id>/", views.other_profile, name="other profile"),
+    path("profile/<int:user_id>/", views.other_profile, name="otherProfile"),
+    path("profile/<int:other_user_id>/b/", views.blacklist_user, name="blackListUser"),
 
 ]
