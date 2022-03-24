@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<div class="row">
+  <div class="col-3">
+
+  </div>
+  <div class="col-6">
+    <div class="translucent m-5">
+    <h1>Welcome to Hustle</h1>
+    <h3>You're in the right place. Hustle is a place where customers and workers come together. You may be too busy to keep up with all the difficult maintenance that c</h3>
+  </div> 
+  </div>
+  <div class="col-3">
+    <div class="card m-5">
+      <div class="card-header">
+        <h1>Need work?</h1>
+      </div>
+      <div class="card-body">
+        <p>
+        Click here to register as a worker, where you can view jobs in your area, make bids, and make money!
+        </p>
+        <button class="btn btn-success">Register as Worker</button>
+      </div>
+    </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+
+      </div>
+      <div class="col-6">
+
+      </div>
+      <div class="col-3">
+        <div class="card m-5">
+          <div class="card-header">
+            <h1>Have work?</h1>
+          </div>
+          <div class="card-body">
+            <p>
+            Click here to register as a customer, where you can post jobs for people in your area to bid on and perform.
+            </p>
+            <button class="btn btn-success">Register as Customer</button>
+          </div>
+        </div>
+        <div class="card m-5">
+          <div class="card-header">
+            <h1>Questions?</h1>
+          </div>
+          <div class="card-body">
+            <p>
+            Click here to contact our support team. They will be able to help you with any questions and concerns you may have.
+            </p>
+            <button class="btn btn-secondary">Contact Us</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
