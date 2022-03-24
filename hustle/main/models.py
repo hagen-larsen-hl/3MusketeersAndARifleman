@@ -18,3 +18,10 @@ class CustomerData(models.Model):
 
 class WorkerData(models.Model):
     user = models.OneToOneField(User, verbose_name="User", related_name="worker_data", on_delete=models.CASCADE, primary_key=True)
+
+class BlackList(models.Model):
+    user = models.ForeignKey(User, related_name="user_blackList",  on_delete=models.CASCADE, default=1)
+    blacklisted_user = models.ForeignKey(User, related_name="blackListed_user", on_delete=models.CASCADE, default=1)
+
+    class Meta:
+        unique_together = ["user","blacklisted_user"]

@@ -15,8 +15,17 @@
                     <p>Last Name: {{ user.last_name }}</p>
                     <p>Email: {{ user.email }}</p>
                </h3>
+            {% if bl %}
+            <a class="btn btn-secondary" href="{% url 'main:blackListUser' user.id %}">Undo BlackList {{ user.username }}</a>
+            {% else %}
+            <a class="btn btn-dark" href="{% url 'main:blackListUser' user.id %}">BlackList {{ user.username }}</a>
+            {% endif %}
         </div>
+
     </div>
+
 </div>
+
+
 
 {% endblock %}
