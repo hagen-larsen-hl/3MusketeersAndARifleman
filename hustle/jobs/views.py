@@ -79,7 +79,6 @@ def view_job(request, job_id):
     form = NewJobBidForm()
     bids = Bid.objects.filter(selected_job_id=job_id)
     return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids})
-
   
 @user_is_authenticated()
 def view_all_jobs(request):
