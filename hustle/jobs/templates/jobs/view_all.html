@@ -5,7 +5,9 @@
 <div class="card m-3 w-75">
     <div class="card-header">
         <h2 style="display: inline-block">My Jobs</h2>
+        {% if not isWorker %}
         <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/create">Create New</a>
+        {% endif %}
     </div>
     <div class="card-body">
         <!--Job Cards-->

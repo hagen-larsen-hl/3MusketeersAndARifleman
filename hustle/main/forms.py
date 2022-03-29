@@ -141,6 +141,21 @@ class EditUser(forms.ModelForm):
         model = User
         fields = ("email", "username", "first_name", "last_name",)
 
+class EditCustomer(forms.ModelForm):
+    street = forms.CharField(label="", max_length=32, required=False, widget=forms.TextInput(attrs={"placeholder": "Address*"}))
+    street2 = forms.CharField(label="", max_length=16, required=False, widget=forms.TextInput(attrs={"placeholder": "Address 2", "no-require": True}))
+    city = forms.CharField(label="", max_length=32, required=False, widget=forms.TextInput(attrs={"style": "width:50%;float:left", "placeholder": "City*"}))
+    state = us.forms.USStateField(label="", required=False, widget=forms.Select(choices=[('XX', "State*"), *us.us_states.US_STATES], attrs={"style": "width:50%;float:right"}))
+    zip_code = us.forms.USZipCodeField(label="", required=False, widget=forms.TextInput(attrs={"placeholder": "Zip Code*"}))
+
+    class Meta:
+        model = CustomerData
+        fields = ("street", "street2", "city", "state","zip_code",)
+
+class EditWorker(forms.ModelForm):
+    class Meta:
+        model = WorkerData
+        fields = ()
 
 class MoneyForm(forms.ModelForm):
     money = forms.DecimalField(label="Amount", required=True, decimal_places=2)
