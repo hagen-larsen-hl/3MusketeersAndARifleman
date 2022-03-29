@@ -28,15 +28,17 @@ def create_job_request(request):
 @user_is_authenticated()
 def view(request):
     if request.user.groups.filter(name="Worker").exists():
-        open_jobs = Job.objects.filter(claimed_user=request.user, complete=False)
+        open_jobs = Job.objects.filter(claimed_user=request.user, complete=False, cancelled=False)
         completed_jobs = Job.objects.filter(claimed_user=request.user, complete=True)
+        cancelled_jobs = Job.objects.filter(claimed_user=request.user, cancelled=True)
         isWorker = True
     else:
-        open_jobs = Job.objects.filter(customer=request.user, complete=False)
+        open_jobs = Job.objects.filter(customer=request.user, complete=False, cancelled=False)
         completed_jobs = Job.objects.filter(customer=request.user, complete=True)
+        cancelled_jobs = Job.objects.filter(customer=request.user, cancelled=True)
         isWorker = False
-
-    return render(request=request, template_name="jobs/view_all.html", context={"open_jobs": open_jobs, "completed_jobs": completed_jobs, "isWorker": isWorker})
+    
+    return render(request=request, template_name="jobs/view_all.html", context={"open_jobs": open_jobs, "completed_jobs": completed_jobs, "isWorker": isWorker, "cancelled_jobs": cancelled_jobs})
 
 
 @user_is_authenticated()
@@ -58,7 +60,7 @@ def update_job_request(request, job_id):
             job.id = job_id
             job.save()
             messages.success(request, "Job submitted successfully.")
-            return redirect("jobs:view")
+            return redirect("jobs:view job", job_id)
         messages.error(request, errors)
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
     form = NewJobForm(instance=job)
@@ -131,4 +133,31 @@ def cancel_accept_bid(request,job_id):
 def view_all_jobs(request):
     jobs = Job.objects.filter(complete=False)
     return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs})
+
+
+@user_is_authenticated()
+def accept_bid(request, job_id, bid_id):
+    try:
+        job = Job.objects.get(pk=job_id)
+    except Job.DoesNotExist:
+        return redirect("jobs:view")
+    if request.method == "POST":
+        bids = [bid for bid in Bid.objects.filter(selected_job_id=job_id) if bid.id == bid_id]
+        if not bids:
+            return redirect("jobs:view")
+        else:
+            job.accepted_bid_id = bid_id
+            job.save()
+        return redirect("jobs:view job", job_id)
+
+@user_is_authenticated()
+def cancel_job(request, job_id):
+    try:
+        job = Job.objects.get(pk=job_id)
+    except Job.DoesNotExist:
+        return redirect("jobs:view")
+    if request.method == "POST":
+        job.cancelled = True
+        job.save()
+        return redirect("jobs:view")
 
