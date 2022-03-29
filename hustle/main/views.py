@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User, BlackList
-from .forms import NewUserForm, MoneyForm, EditUser
+from .forms import NewUserForm, MoneyForm, EditUser, EditCustomer, EditWorker
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -53,7 +53,7 @@ def logout_request(request):
 
 @user_is_authenticated()
 def profile(request):
-    return render(request, 'main/profile.html', {})
+    return render(request, 'main/profile.html', {"isCustomer": request.user.groups.filter(name='Customer').exists(),"isWorker": request.user.groups.filter(name='Worker').exists()})
 
 
 @user_is_authenticated()
@@ -80,7 +80,7 @@ def deposit_money(request):
         request.user.data.money += form.cleaned_data['money']
         request.user.data.save()
         return redirect("main:profile")
-    return render(request, 'main/profile.html', {"deposit": True, "money_form": form})
+    return render(request, 'main/profile.html', {"deposit": True, "money_form": form,"isCustomer": request.user.groups.filter(name='Customer').exists(),"isWorker": request.user.groups.filter(name='Worker').exists()})
 
 
 @user_is_authenticated()
@@ -90,19 +90,37 @@ def withdraw_money(request):
         request.user.data.money -= form.cleaned_data['money']
         request.user.data.save()
         return redirect("main:profile")
-    return render(request, 'main/profile.html', {"withdraw": True, "money_form": form})
+    return render(request, 'main/profile.html', {"withdraw": True, "money_form": form, "isCustomer": request.user.groups.filter(name='Customer').exists(),"isWorker": request.user.groups.filter(name='Worker').exists()})
 
 
 @user_is_authenticated()
 def edit_user(request):
     form = EditUser(instance=request.user)
+    cForm = None
+    wForm = None
+
+    if request.user.groups.filter(name='Customer').exists():
+        cForm = EditCustomer(instance=request.user.customer_data)
+
+    if request.user.groups.filter(name='Worker').exists():
+        wForm = EditWorker(instance=request.user.worker_data)
 
     if request.method == "POST":
         form = EditUser(data=request.POST, instance=request.user)
-        if form.is_valid():
+
+        if request.user.groups.filter(name='Customer').exists():
+            cForm = EditCustomer(data=request.POST, instance=request.user.customer_data)
+
+        if request.user.groups.filter(name='Worker').exists():
+            wForm = EditWorker(data=request.POST, instance=request.user.worker_data)
+        if form.is_valid() and (cForm == None or cForm.is_valid()) and (wForm == None or wForm.is_valid()):
             form.save()
+            if cForm != None:
+                cForm.save()
+            if wForm != None:
+                wForm.save()
             return redirect("main:profile")
-    return render(request, 'main/profile.html', {"edit": True, "edit_form": form})
+    return render(request, 'main/profile.html', {"edit": True, "edit_form": form, "cForm": cForm, "wForm": wForm})
 
 
 @user_is_authenticated()

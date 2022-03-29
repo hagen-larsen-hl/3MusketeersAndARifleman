@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 
 class JobType(models.Model):
     type = models.CharField(max_length=30, default="Mow Lawn")
+    ownerCut = models.DecimalField(max_digits=5, decimal_places=2, default=0.05)
+    canceledTime = models.IntegerField(default=24)
 
     def __str__(self):
         return self.type
@@ -20,10 +22,12 @@ class Job(models.Model):
     completion_window_end = models.DateField(name="completion_window_end")
     type = models.ForeignKey(JobType, on_delete=models.CASCADE)
     claimed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="claimed_user", null=True)
+    cancelled = models.BooleanField(name="cancelled", default=False)
 
+    def request_from_owner(self, request):
+        return True
+        # return customer == request.user
 
-    def request_from_owner(request):
-        return customer == request.user
 
 class Bid(models.Model):
     bid = models.DecimalField(max_digits=100, decimal_places=2)
