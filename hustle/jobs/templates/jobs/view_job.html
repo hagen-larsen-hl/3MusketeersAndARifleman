@@ -20,18 +20,27 @@
 <div class="d-flex justify-content-center">
     <div class="card w-50 m-5">
         <div class="card-header">
-            <h2>Job# {{ job.id }} <span style="float: right">Created By: {% include 'main/user_link.html' with user=job.customer %}</span></h2>
+            <h2 style="display: flex; flex-direction: row">
+                <span style="flex-grow: 1">Job# {{ job.id }}</span>
+                <form style="margin-right: 8px" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
+                    {% csrf_token %}
+                    <input type="submit" value="Cancel Job"></input>
+                </form>
+                <span>Created By: {% include 'main/user_link.html' with user=job.customer %}</span></h2>
         </div>
         <div class="card-body justify-content-center">
             <p>Type: {{ job.type }}</p>
-            <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
             <p>Time Estimate: {{ job.time_estimate }}</p>
             <p>Completion Window Start: {{ job.completion_window_start }}</p>
             <p>Completion Window End: {{ job.completion_window_end }}</p>
             <p>Completed: <input type="checkbox" disabled {% if job.complete %}checked{% endif %}></p>
             <p>Zip Code: {{ job.zip_code }}</p>
+            {% if job.accepted_bid %}
+                <p>Accepted Bid Amount: {{ job.accepted_bid.bid }}</p>
+                <p>Accepted Bid User: {{ job.accepted_bid.user }}</p>
+            {% endif %}
         </div>
-        {% if not job.complete %}
+        {% if not job.complete and not job.accepted_bid %}
             <div>
                 <h5>Current Bids</h5>
             </div>
@@ -49,7 +58,10 @@
                         {{ bid.user }}
                     </td>
                     <td>
-                        <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">Accept</a>
+                        <form method="post" action="{{ url }}/jobs/accept_bid/{{ job.id }}/{{ bid.id }}">
+                            {% csrf_token %}
+                            <input type="submit" value="Accept"></input>
+                        </form>
                     </td>
                     </tr>
                 {% endfor %}
