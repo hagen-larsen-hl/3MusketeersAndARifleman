@@ -1,0 +1,51 @@
+
+
+body {
+  background-image: url("background.jpeg");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.translucent {
+    opacity: 0.75;
+    background-color: white;
+}
+
+.bg-hustle {
+  --bs-bg-opacity: 1;
+    background-color: #537f37
+}
+
+.btn-hustle {
+  color: #fff;
+    background-color: #537f37;
+    border-color: #537f37;
+}
+
+.border-hustle {
+  border-color: #537f37
+}
+
+.border-brown {
+  border-color: #8a703f
+}
+
+.img-border {
+  margin: 5px;
+  padding: 10px;
+}
+
+.bg-brown {
+  --bs-bg-opacity: 1;
+  background-color: #8a703f
+}
+
+.bg-hustle-secondary {
+  --bs-bg-opacity: 1;
+    background-color: #3f8dc4;
+}
+
+.bg-hustle-winter {
+  --bs-bg-opacity: 1;
+    background-color: #61a3d3b2;
+}

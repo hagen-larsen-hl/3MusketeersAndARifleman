@@ -7,6 +7,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from main.auth import user_not_authenticated, user_is_authenticated
 
 
+def landing(request):
+    return render(request, "main/landing.html")
+
+
 @user_not_authenticated()
 def register_request(request):
     if request.method == "POST":
