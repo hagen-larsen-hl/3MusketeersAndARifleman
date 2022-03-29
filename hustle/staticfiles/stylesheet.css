@@ -22,6 +22,18 @@ body {
     border-color: #537f37;
 }
 
+.btn-brown {
+  color: #fff;
+    background-color: #8a703f;
+    border-color: #8a703f;
+}
+
+.btn-hustle-secondary {
+  color: #fff;
+    background-color: #3f8dc4;
+    border-color: #3f8dc4;
+}
+
 .border-hustle {
   border-color: #537f37
 }
@@ -48,4 +60,8 @@ body {
 .bg-hustle-winter {
   --bs-bg-opacity: 1;
     background-color: #61a3d3b2;
+}
+
+.link-hustle {
+  color: #3f8dc4
 }
