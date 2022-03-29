@@ -51,20 +51,47 @@
             {% if edit %}
                 <form method="POST" class="m-2">
                     {% csrf_token %}
+
                     {% for field in edit_form %}
                         <div class="fieldWrapper mb-2">
                           {{ field|as_crispy_field }}
                         </div>
                     {% endfor %}
+
+                    {% if cForm != None %}
+                    {% for field in cForm %}
+                    <div class="fieldWrapper">
+                        {{ field|as_crispy_field }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if wForm != None %}
+                    {% for field in wForm %}
+                    <div class="fieldWrapper">
+                        {{ field|as_crispy_field }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     <button class="btn m-2 btn-primary btn-lg" type="submit">Save</button>
                     <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
                 </form>
             {% else %}
                <h3>
-                    <p>User Name: {{ user.username}}</p>
-                    <p>First Name: {{ user.first_name }}</p>
-                    <p>Last Name: {{ user.last_name }}</p>
-                    <p>Email: {{ user.email }}</p>
+                   <p>User Name: {{ user.username}}</p>
+                   <p>First Name: {{ user.first_name }}</p>
+                   <p>Last Name: {{ user.last_name }}</p>
+                   <p>Email: {{ user.email }}</p>
+                   {% if isCustomer %}
+                   <p>Street: {{ user.customer_data.street }}</p>
+                   <P>Street2: {{ user.customer_data.street2 }}</P>
+                   <p>City: {{ user.customer_data.city }}</p>
+                   <p>State: {{ user.customer_data.state }}</p>
+                   <p>Zip Code: {{ user.customer_data.zip_code }}</p>
+                   {% endif %}
+                   {% if isWorker %}
+                   {% endif %}
+
                </h3>
                 <a class="btn m-2 btn-success btn-lg" href="/main/edit">Edit</a>
             {% endif %}
