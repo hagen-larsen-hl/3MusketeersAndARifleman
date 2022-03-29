@@ -25,16 +25,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{{ url }}/main/login">Login or register to
-                                view additional navigation options</a>
-                        </li>
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{{ url }}/main">My Profile</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url }}/jobs/view/mine">View My Jobs</a>
-                      </li>
+                        {% if user.customer_data %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="customerDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,10 +41,13 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li><a class="dropdown-item" href="{{ url }}/jobs/create">Post a Job</a></li>
+                                <li><a class="dropdown-item" href="{{ url }}/jobs/view/mine">View My Jobs</a></li>
                                 <li><a class="dropdown-item" href="{{ url }}/complaints/create">File a Complaint</a>
                                 </li>
                             </ul>
                         </li>
+                        {% endif %}
+                        {% if user.worker_data %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="workerDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,6 +62,8 @@
                                 <li><a class="dropdown-item" href="#">View Bids</a></li>
                             </ul>
                         </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -74,11 +74,18 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="{{ url }}/complaints/view">Process Complaints</a>
+                                <li><a class="dropdown-item" href="{{ url }}/complaints/view/all">Process Complaints</a>
                                 </li>
                                 <li><a class="dropdown-item" href="#">Configure Site Settings</a></li>
                             </ul>
                         </li>
+                        {% endif %}
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{{ url }}/main/login">Login or register to
+                                view additional navigation options</a>
+                        </li>
+                        {% endif %}
                     </ul>
                     <form class="d-flex">
                         {% if user.is_authenticated %}
@@ -95,7 +102,9 @@
     </div>
 
     <div id="content" class="background vh-100">
+        <div class="row my-5">
         {% block content %}{% endblock %}
+        </div>
         <div class="row my-5">
             <div class="bg-hustle text-white">
                 <div class="row" style="height: 500px">
