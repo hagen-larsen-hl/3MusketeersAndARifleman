@@ -8,7 +8,8 @@
         <h2 style="display: inline-block">All Jobs</h2>
 	{% else %}
         <h2 style="display: inline-block">My Jobs</h2>
-        {% if not user.worker_data %}
+	{% endif %}
+	{% if user.customer_data %}
         <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/create">Create New</a>
 	{% endif %}
     </div>
