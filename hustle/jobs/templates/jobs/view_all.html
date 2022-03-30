@@ -70,6 +70,34 @@
               </div>
             </div>
           </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="cancelled_jobs_section_header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cancelled_jobs_section" aria-expanded="false" aria-controls="cancelled_jobs_section">
+                    <strong>Cancelled Jobs ({{ cancelled_jobs.count }})</strong>
+                  </button>
+                </h2>
+                <div id="cancelled_jobs_section" class="accordion-collapse collapse" aria-labelledby="cancelled_jobs_section_header">
+                  <div class="accordion-body">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                      {% for job in cancelled_jobs %}
+                        <div class="col">
+                        <div class="card m-1">
+                          <div class="card-header">
+                              <h5 class="my-2" style="float: left">Job #{{ job.id }}</h5>
+                              <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
+                          </div>
+                          <div class="card-body">
+                               <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>
+                               <p id="time_estimate{{ job.id }}"><strong>Time Estimate:</strong> {{ job.time_estimate }}</p>
+                               <p id="bid{{ job.id }}"><strong>Bid:</strong> {{ job.bid }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
     </div>
 </div>

@@ -15,9 +15,9 @@
 
 <body>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-hustle">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Hustle</a>
+                <a class="navbar-brand" href="{{ url }}/">Hustle</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -25,29 +25,74 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ url }}/main">Profile</a>
+                            <a class="nav-link active" aria-current="page" href="{{ url }}/main">My Profile</a>
                         </li>
-{#                        <li class="nav-item">#}
-{#                            <a class="nav-link" href="{{ url }}/jobs/view">View My Jobs</a>#}
-{#                        </li>#}
+                        {% if user.customer_data %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="customerDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Customer Tools
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="customerDropdown">
+                                <li><a class="dropdown-item" href="#">Customer Dashboard</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{{ url }}/jobs/create">Post a Job</a></li>
+                                <li><a class="dropdown-item" href="{{ url }}/jobs/view/mine">View My Jobs</a></li>
+                                <li><a class="dropdown-item" href="{{ url }}/complaints/create">File a Complaint</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% if user.worker_data %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="workerDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Worker Tools
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="workerDropdown">
+                                <li><a class="dropdown-item" href="#">Worker Dashboard</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{{ url }}/jobs/view">Find Jobs</a></li>
+                                <li><a class="dropdown-item" href="#">View Bids</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Administration Tools
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <li><a class="dropdown-item" href="{{ url }}/admin">Administration Portal</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{{ url }}/complaints/view/all">Process Complaints</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Configure Site Settings</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url }}/jobs/view">View All Jobs</a>
+                            <a class="nav-link" aria-current="page" href="{{ url }}/main/login">Login or register to
+                                view additional navigation options</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url }}/jobs/view/mine">View My Jobs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url }}/complaints/view">Complaints</a>
-                        </li>
+                        {% endif %}
                     </ul>
                     <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-light m-1" type="submit">Search</button>
                         {% if user.is_authenticated %}
-                        <a class="btn btn-light m-1" type="button" href="/main/logout">Logout</a>
+                        <a class="btn btn-light m-1" type="button" href="{{ url }}/main/logout">Logout</a>
                         {% else %}
-                        <a class="btn btn-light m-1" type="button" href="/main/login">Login</a>
+                        <a class="btn btn-light m-1" type="button" href="{{ url }}/main/login">Login</a>
+                        <a class="btn btn-light m-1" type="button" href="{{ url }}/main/register">Register</a>
                         {% endif %}
 
                     </form>
@@ -56,8 +101,43 @@
         </nav>
     </div>
 
-    <div id="content">
+    <div id="content" class="background vh-100">
+        <div class="row my-5">
         {% block content %}{% endblock %}
+        </div>
+        <div class="row my-5">
+            <div class="bg-hustle text-white">
+                <div class="row" style="height: 500px">
+                    <div class="col-3 p-5">
+                        <h4>Contributors</h4>
+                        <p>Jade Blunt</p>
+                        <p>Bennet DenBleyker</p>
+                        <p>Jacob Haight</p>
+                        <p>Hagen Larsen</p>
+                    </div>
+                    <div class="col-3 p-5">
+                        <h4>Tech Stack</h4>
+                        <p>Django - <a class="text-white" href="https://www.djangoproject.com/">View</a></p>
+                        <p>Bootstrap - <a class="text-white" href="https://www.djangoproject.com/">View</a></p>
+                        <p>Github - <a class="text-white" href="https://www.djangoproject.com/">View</a></p>
+                    </div>
+                    <div class="col-3 p-5">
+                        <h4>Created By</h4>
+                        <p>Jade Blunt</p>
+                        <p>Bennet DenBleyker</p>
+                        <p>Jacob Haight</p>
+                        <p>Hagen Larsen</p>
+                    </div>
+                    <div class="col-3 p-5">
+                        <h4>Created By</h4>
+                        <p>Jade Blunt</p>
+                        <p>Bennet DenBleyker</p>
+                        <p>Jacob Haight</p>
+                        <p>Hagen Larsen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Import Bootstrap JS -->
