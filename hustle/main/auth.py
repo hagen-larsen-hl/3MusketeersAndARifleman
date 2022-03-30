@@ -36,16 +36,24 @@ def user_not_authenticated(redirect_to="main:profile", su_passes=False):
         su_passes=su_passes
     )
 
-def user_in_group(*groups, on_fail=HttpResponseForbidden, su_passes=False):
-    def _in_group(user, groups):
-        if "Owner" in groups and user.is_superuser:
-            return None
-        elif user.groups.filter(name__in=groups).exists():
-            return None
-        else:
-            return on_fail()
+def user_in_group(*groups, on_fail=HttpResponseForbidden(), su_passes=False):
     return user_passes_test(
-        lambda request: _in_group(request.user, groups),
+        lambda request: None if is_in_group(request.user, *groups) else on_fail,
         su_passes=su_passes
     )
+
+def is_in_group(user, *groups, su_passes=False):
+    if user.is_superuser and ("Owner" in groups or su_passes):
+        return True
+    elif user.groups.filter(name__in=groups).exists():
+        return True
+    else:
+        return False
+
+def user_groups(user):
+    groups = user.groups.all()
+    r = []
+    for group in groups:
+        r.append(group.name)
+    return r
 

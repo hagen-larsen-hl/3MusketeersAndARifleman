@@ -15,53 +15,45 @@
     <div class="col-6">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
-                <h1>Welcome, {{ user.first_name }}!</h1>
+                <h1 class="d-inline-block">Welcome, {{ user.first_name }}!</h1>
+	        <span style="float: right" class="badge bg-primary">
+                    {% if user.customer_data %}
+		    Customer
+		    {% elif user.worker_data %}
+		    Worker
+		    {% elif user.is_superuser %}
+		    Owner / Superuser
+		    {% endif %}
+	        </span>
             </div>
             <div class="card-body justify-content-center">
                 {% if edit %}
                     <form method="POST" class="m-2">
                         {% csrf_token %}
-    
-                        {% for field in edit_form %}
-                            <div class="fieldWrapper mb-2">
-                              {{ field|as_crispy_field }}
-                            </div>
-                        {% endfor %}
-    
-                        {% if cForm != None %}
-                        {% for field in cForm %}
-                        <div class="fieldWrapper">
-                            {{ field|as_crispy_field }}
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-    
-                        {% if wForm != None %}
-                        {% for field in wForm %}
-                        <div class="fieldWrapper">
-                            {{ field|as_crispy_field }}
-                        </div>
-                        {% endfor %}
-                        {% endif %}
+		        {% for edit_form in edit_forms %}
+		    	    {% if edit_form.as_card %}
+			    <div id="{{ edit_form.as_card }}" class="card" style="margin-top: 1em">
+			    <div class="card-header">{{ edit_form.card_header }}</div>
+			    <div class="card-body">
+			    {% endif %}
+                            {% for field in edit_form %}
+                                <div class="fieldWrapper mb-2">
+                                  {{ field|as_crispy_field }}
+                                </div>
+                            {% endfor %}
+			    {% if edit_form.as_card %}
+			    </div>
+			    </div>
+			    {% endif %}
+		        {% endfor %}
                         <button class="btn m-2 btn-hustle btn-lg" type="submit">Save</button>
                         <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
                     </form>
                 {% else %}
                    <h3>
-                       <p>User Name: {{ user.username}}</p>
-                       <p>First Name: {{ user.first_name }}</p>
-                       <p>Last Name: {{ user.last_name }}</p>
-                       <p>Email: {{ user.email }}</p>
-                       {% if isCustomer %}
-                       <p>Street: {{ user.customer_data.street }}</p>
-                       <P>Street2: {{ user.customer_data.street2 }}</P>
-                       <p>City: {{ user.customer_data.city }}</p>
-                       <p>State: {{ user.customer_data.state }}</p>
-                       <p>Zip Code: {{ user.customer_data.zip_code }}</p>
-                       {% endif %}
-                       {% if isWorker %}
-                       {% endif %}
-    
+		       {% for profile_field in profile_fields %}
+		       <p>{{ profile_field.0 }}: {{ profile_field.1 }}</p>
+		       {% endfor %}
                    </h3>
                     <a class="btn m-2 btn-hustle btn-lg" href="/main/edit">Edit</a>
                 {% endif %}
@@ -124,5 +116,44 @@
     </div>
     {% endif %}
 </div>
+
+<script type="text/javascript">
+    function carry_over(input_event, length, previous, next) {
+        let value = input_event.target.value;
+        if (value.length == length) {
+            if (next) {
+                next.focus();
+            } else {
+                document.activeElement.blur();
+            }
+        } else if (value.length == 0 && previous) {
+            previous.focus();
+        } else if (value.length > length && input_event.data) {
+            input_event.target.value = input_event.target.value.substr(0, length);
+            if (next) {
+                next.focus();
+            } else {
+                document.activeElement.blur();
+            }
+        }
+    }
+    {
+        let area_code = document.querySelector("input[name='phone_number_area_code']");
+        let prefix = document.querySelector("input[name='phone_number_prefix']");
+        let line_number = document.querySelector("input[name='phone_number_line_number']");
+        area_code.oninput = (e) => {carry_over(e, 3, null, prefix);};
+        prefix.oninput = (e) => {carry_over(e, 3, area_code, line_number);};
+        line_number.oninput = (e) => {carry_over(e, 4, prefix, null);};
+    }
+    document.querySelectorAll("#id_state option:first-child").forEach(el => {el.disabled = true;});
+
+</script>
+<style>
+    input[name^='phone_number_'] {
+        width: 5em;
+	display: inline;
+	background-image: none !important;
+	padding-right: inherit !important;
+    }
 
 {% endblock %}

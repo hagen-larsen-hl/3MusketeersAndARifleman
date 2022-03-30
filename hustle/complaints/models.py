@@ -19,7 +19,7 @@ class Complaint(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.RESTRICT, default=1)
     reason = models.CharField(max_length=100, choices=REASONS)
-    other_reason = models.CharField(max_length=100)
+    other_reason = models.CharField(max_length=100, blank=True)
     description = models.TextField()
     image = models.CharField(max_length=30)
     state = models.CharField(max_length=30, choices=STATES, default='open')

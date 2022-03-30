@@ -18,7 +18,7 @@ class SplitPhoneNumberField(forms.MultiValueField):
                 "line_number": forms.NumberInput,
             }
         )
-        widget.decompress = lambda data: data.replace("-", " ").replace(r'[\(\)]', '').split(" ") if data else [None, None, None]
+        widget.decompress = lambda data: data.replace("-", " ").replace('(', '').replace(')', '').split(" ") if data else [None, None, None]
         error_messages = {"incomplete": "Enter a valid phone number.",}
         validator = lambda digits: RegexValidator(r'^[0-9]{' + str(digits) + r'}$', "Enter a valid phone number.")
         fields = (
@@ -156,6 +156,30 @@ class EditWorker(forms.ModelForm):
     class Meta:
         model = WorkerData
         fields = ()
+
+class EditUserData(forms.ModelForm):
+    phone_number = SplitPhoneNumberField(label="Phone Number", require_all_fields=True)
+    class Meta:
+        model = UserData
+        exclude = ("user", "money",)
+class EditCustomerData(forms.ModelForm):
+    street = forms.CharField(label="Address", max_length=128, widget=forms.TextInput(attrs={"placeholder": "Street Address*"}))
+    street2 = forms.CharField(label="", max_length=16, widget=forms.TextInput(attrs={"placeholder": "Address 2", "no-require": True}))
+    city = forms.CharField(label="", max_length=32, widget=forms.TextInput(attrs={"style": "width:50%;float:left", "placeholder": "City*"}))
+    state = us.forms.USStateField(label="", widget=forms.Select(choices=[('XX', "State*"), *us.us_states.US_STATES], attrs={"style": "width:50%;float:right"}))
+    zip_code = us.forms.USZipCodeField(label="", widget=forms.TextInput(attrs={"placeholder": "Zip Code*"}))
+    as_card = "customer"
+    card_header = "Customer Data"
+    class Meta:
+        model = CustomerData
+        exclude = ("user",)
+class EditWorkerData(forms.ModelForm):
+    as_card = "worker"
+    card_header = "Worker Data"
+    class Meta:
+        model = WorkerData
+        exclude = ("user",)
+
 
 class MoneyForm(forms.ModelForm):
     money = forms.DecimalField(label="Amount", required=True, decimal_places=2)

@@ -4,10 +4,13 @@
 
 <div class="card m-3 w-75">
     <div class="card-header">
+	{% if all %}
+        <h2 style="display: inline-block">All Jobs</h2>
+	{% else %}
         <h2 style="display: inline-block">My Jobs</h2>
-        {% if not isWorker %}
+        {% if not user.worker_data %}
         <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/create">Create New</a>
-        {% endif %}
+	{% endif %}
     </div>
     <div class="card-body">
         <!--Job Cards-->

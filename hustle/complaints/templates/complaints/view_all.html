@@ -9,7 +9,9 @@
         {% else %}
           <h2 style="display: inline-block">My Complaints</h2>
         {% endif %}
+	{% if user.customer_data %}
         <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/complaints/create">Create New</a>
+	{% endif %}
     </div>
     <div class="card-body">
         <!--Complaint Cards-->

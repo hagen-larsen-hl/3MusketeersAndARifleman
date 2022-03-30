@@ -4,7 +4,9 @@
       <div class="card-header">
           <h5 class="my-2" style="float: left">Job #{{ job.id }} <div> {% include 'main/user_link.html' with user=job.customer %}</div> </h5>
           <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ job.get_state_display }}</span></h5>
+	  {% if job.user == user %}
           <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/update/{{ job.id }}">Edit</a>
+	  {% endif %}
           <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
       </div>
       <div class="card-body">
