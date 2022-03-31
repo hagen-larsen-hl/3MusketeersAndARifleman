@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
-from .models import User, BlackList
-from .forms import NewUserForm, MoneyForm, EditUser
+from .models import User, UserData, BlackList
+from .forms import NewUserForm, MoneyForm, EditUser, EditUserData, EditCustomerData, EditWorkerData
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Group
 from main.auth import user_not_authenticated, user_is_authenticated
+
+
+def landing(request):
+    return render(request, "main/landing.html")
 
 
 @user_not_authenticated()
@@ -31,6 +36,9 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
+                if not hasattr(user, "data") and user.is_superuser:
+                    UserData.objects.create(user=user)
+                    user.groups.add(Group.objects.get(name='Owner'))
                 return redirect("main:profile")
             else:
                 messages.error(request, "Invalid username or password.")
@@ -47,9 +55,27 @@ def logout_request(request):
     return redirect("main:login")
 
 
+def get_profile_fields(user, show_sensitive=True):
+    fields = [
+        ("Username", user.get_username()),
+        ("Name", user.get_full_name()),
+        ("Email", user.email),
+    ]
+    if hasattr(user, "data"):
+        udata = user.data
+        fields.append(("Phone Number", udata.phone_number))
+    if hasattr(user, "customer_data"):
+        cdata = user.customer_data
+        street2 = f", {cdata.street2}" if cdata.street2 else ""
+        fields.append(("Address", f"{cdata.street}{street2}, {cdata.city}, {cdata.state} {cdata.zip_code}"))
+    if hasattr(user, "worker_data"):
+        wdata = user.worker_data
+    return fields
+
+
 @user_is_authenticated()
 def profile(request):
-    return render(request, 'main/profile.html', {})
+    return render(request, 'main/profile.html', {"profile_fields": get_profile_fields(request.user)})
 
 
 @user_is_authenticated()
@@ -71,34 +97,63 @@ def other_profile(request, user_id):
 
 @user_is_authenticated()
 def deposit_money(request):
-    form = MoneyForm(data=request.POST)
-    if form.is_valid():
-        request.user.data.money += form.cleaned_data['money']
-        request.user.data.save()
-        return redirect("main:profile")
-    return render(request, 'main/profile.html', {"deposit": True, "money_form": form})
+    if request.method == "POST":
+        form = MoneyForm(data=request.POST)
+        if form.is_valid():
+            request.user.data.money += form.cleaned_data['money']
+            request.user.data.save()
+            return redirect("main:profile")
+    else:
+        form = MoneyForm()
+    return render(request, 'main/profile.html', {"deposit": True, "money_form": form, "profile_fields": get_profile_fields(request.user)})
 
 
 @user_is_authenticated()
 def withdraw_money(request):
-    form = MoneyForm(data=request.POST)
-    if form.is_valid():
-        request.user.data.money -= form.cleaned_data['money']
-        request.user.data.save()
-        return redirect("main:profile")
-    return render(request, 'main/profile.html', {"withdraw": True, "money_form": form})
+    if request.method == "POST":
+        form = MoneyForm(data=request.POST)
+        if form.is_valid():
+            request.user.data.money -= form.cleaned_data['money']
+            request.user.data.save()
+            return redirect("main:profile")
+    else:
+        form = MoneyForm()
+    return render(request, 'main/profile.html', {"withdraw": True, "money_form": form, "profile_fields": get_profile_fields(request.user)})
 
+
+_edit_user_forms = {
+    'data': EditUserData,
+    'customer_data': EditCustomerData,
+    'worker_data': EditWorkerData,
+}
 
 @user_is_authenticated()
 def edit_user(request):
-    form = EditUser(instance=request.user)
+    forms = [
+        EditUser(instance=request.user),
+    ]
+    for k,v in _edit_user_forms.items():
+        if hasattr(request.user, k):
+            forms.append(v(instance=getattr(request.user, k)))
 
     if request.method == "POST":
-        form = EditUser(data=request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        forms = [
+            EditUser(data=request.POST, instance=request.user),
+        ]
+        for k,v in _edit_user_forms.items():
+            if hasattr(request.user, k):
+                forms.append(v(data=request.POST, instance=getattr(request.user, k)))
+        
+        form_valid = True
+        for form in forms:
+            if not form.is_valid():
+                validity = False
+                break
+        if form_valid:
+            for form in forms:
+                form.save()
             return redirect("main:profile")
-    return render(request, 'main/profile.html', {"edit": True, "edit_form": form})
+    return render(request, 'main/profile.html', {"edit": True, "edit_forms": forms})
 
 
 @user_is_authenticated()

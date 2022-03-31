@@ -5,81 +5,124 @@
 {% load crispy_forms_tags %}
 
 <!--View Job-->
+
 <head>
     <style>
-    table {
-      border-collapse: collapse;
-    }
+        table {
+            border-collapse: collapse;
+        }
 
-    tr {
-      border-bottom: 1px solid #ddd;
-    }
+        tr {
+            border-bottom: 1px solid #ddd;
+        }
     </style>
     <title>View Job</title>
 </head>
 <div class="d-flex justify-content-center">
     <div class="card w-50 m-5">
-        <div class="card-header">
+        <div class="card-header bg-hustle-secondary text-white">
             <h2 style="display: flex; flex-direction: row">
-                <span style="flex-grow: 1">Job# {{ job.id }}</span>
-                <form style="margin-right: 8px" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
-                    {% csrf_token %}
-                    <input type="submit" value="Cancel Job"></input>
-                </form>
-                <span>Created By: {% include 'main/user_link.html' with user=job.customer %}</span></h2>
+                <h2 class="my-2" style="float: left">Job #{{ job.id }}</h2>
+                <h2><span class="badge rounded-pill bg-brown my-2 border border-white" style="float: right">Customer: <a
+                            class="text-white" href="{% url 'main:otherProfile' job.customer.id %}">{{ job.customer.username }}</a></span></h2>
+            </h2>
         </div>
         <div class="card-body justify-content-center">
-            <p>Type: {{ job.type }}</p>
-            <p>Time Estimate: {{ job.time_estimate }}</p>
-            <p>Completion Window Start: {{ job.completion_window_start }}</p>
-            <p>Completion Window End: {{ job.completion_window_end }}</p>
-            <p>Completed: <input type="checkbox" disabled {% if job.complete %}checked{% endif %}></p>
-            <p>Zip Code: {{ job.zip_code }}</p>
-            {% if job.accepted_bid %}
-                <p>Accepted Bid Amount: {{ job.accepted_bid.bid }}</p>
-                <p>Accepted Bid User: {{ job.accepted_bid.user }}</p>
+            <div>
+                {% if job.accepted_bid != null %}
+                <div class="m-2">
+                    <p>Accepted User: {% include 'main/user_link.html' with user=job.accepted_bid.user %}</p>
+                    <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                </div>
+                {% endif %}
+
+                <div class="m-2 bg-light p-4 rounded border border-hustle">
+                    <h3 class="pb-4">Job Details</h3>
+                    <p>Type: {{ job.type }}</p>
+                    <p>Time Estimate: {{ job.time_estimate }}</p>
+                    <p>Completion Window Start: {{ job.completion_window_start }}</p>
+                    <p>Completion Window End: {{ job.completion_window_end }}</p>
+                    <p>Zip Code: {{ job.zip_code }}</p>
+                </div>
+
+                <div class="m-2">
+                    {% if job.claimed_user == user %}
+                    {% if not job.complete %}
+                    <a class="btn btn-hustle-secondary m-1" href="{% url 'jobs:complete job' job.id %}">Mark
+                        Complete</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if job.complete %}
+                <div class="m-1">Job Completed</div>
+                {% endif %}
+            </div>
+            <div>
+                {% if not job.complete and not job.accepted_bid %}
+                <div class="m-2 bg-light p-4 rounded border border-hustle">
+                    <h2>Current Bids</h2>
+                    <table class="table table-sm m-4">
+                        <tr>
+                            <th>Bid</th>
+                            <th>User</th>
+                        </tr>
+                        {% for bid in bids %}
+                        <tr>
+                            <td>
+                                {{ bid.bid }}
+                            </td>
+                            <td>
+                                {{ bid.user }}
+                            </td>
+                            <td>
+
+                                <form method="post" action="{{ url }}/jobs/accept_bid/{{ job.id }}/{{ bid.id }}">
+                                    {% csrf_token %}
+                                    <input class="btn btn-hustle" type="submit" value="Accept"></input>
+                                </form>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="m-2 bg-light p-4 rounded border border-hustle">
+                    <div class="">
+                        <h5>Submit A New Bid</h5>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="fieldWrapper">
+                                {{ job_bid_form.bid|as_crispy_field }}
+                            </div>
+                            <div class=" my-2">
+                                <button class="btn btn-hustle" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% else %}
+                    {% if not job.complete %}
+                    <a class="btn btn-warning m-1" style="float: right"
+                        href="{% url 'jobs:cancel accept bid' job.id %}">Cancel
+                        Accepted Bid</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% if job.customer == user %}
+            <div class="m-2 bg-light p-4 rounded border border-hustle row">
+                <div class="col-6">
+                    <a class="btn btn-hustle w-100" href="{% url 'complaints:create' %}">File A Complaint</a>
+                </div>
+                <div class="col-6">
+                    <form class="w-100" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
+                        {% csrf_token %}
+                        <input class="w-100 btn btn-danger" type="submit" value="Cancel Job"></input>
+                    </form>
+                </div>
+            </div>
             {% endif %}
         </div>
-        {% if not job.complete and not job.accepted_bid %}
-            <div>
-                <h5>Current Bids</h5>
-            </div>
-            <table class="table table-sm">
-                <tr>
-                    <th>Bid</th>
-                    <th>User</th>
-                </tr>
-                {% for bid in bids %}
-                    <tr>
-                    <td>
-                        {{ bid.bid }}
-                    </td>
-                    <td>
-                        {{ bid.user }}
-                    </td>
-                    <td>
-                        <form method="post" action="{{ url }}/jobs/accept_bid/{{ job.id }}/{{ bid.id }}">
-                            {% csrf_token %}
-                            <input type="submit" value="Accept"></input>
-                        </form>
-                    </td>
-                    </tr>
-                {% endfor %}
-            </table>
-            <br>
-            <div>
-                <h5>Submit A New Bid</h5>
-                <form method="POST">
-                        {% csrf_token %}
-                        <div class="fieldWrapper">
-                            {{ job_bid_form.bid|as_crispy_field }}
-                        </div>
-                        <div class="justify-content-center">
-                            <button class="btn btn-success" type="submit">Submit</button>
-                        </div>
-                </form>
-            </div>
-        {% endif %}
     </div>
 </div>
 
