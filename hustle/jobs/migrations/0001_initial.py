@@ -26,6 +26,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('type', models.CharField(default='Mow Lawn', max_length=30)),
+                ('ownerCut', models.DecimalField(max_digits=5, decimal_places=2, default=0.05)),
+                ('canceledTime', models.IntegerField(default=24)),
             ],
         ),
         migrations.CreateModel(
