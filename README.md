@@ -22,6 +22,8 @@ Clone the project in gitbash. ``` bash $ git clone https://github.com/yodarocks1
 
 The next steps are subject to change.
 
+- run ``` pip install djang-localflavor ```
+
 - run ``` pip install django-crispy-forms ```
 
 - run ``` python manage.py makemigrations ```
