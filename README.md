@@ -52,7 +52,7 @@ Destroying test database for alias 'default'...
 System check identified no issues (0 silenced).
 ```
 
-The unit tests test all the data base obejcts to make sure that everything is working with inserting things into the database and making sure the connectins all work
+The unit tests test all the data base objects and connections by inserting things into the database and then recalling them and comparing
 
 ## System Testing Instructions
 
