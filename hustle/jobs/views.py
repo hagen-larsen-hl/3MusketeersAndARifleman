@@ -18,7 +18,7 @@ def create_job_request(request):
             job.customer = request.user
             job.save()
             messages.success(request, "Job submitted successfully.")
-            return redirect("jobs:view")
+            return redirect("jobs:view mine")
         messages.error(request, errors)
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
     form = NewJobForm()
