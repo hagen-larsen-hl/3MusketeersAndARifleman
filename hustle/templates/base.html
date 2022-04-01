@@ -17,6 +17,7 @@
 {% url 'main:logout' as logout_url %}
 {% url 'jobs:view' as view_jobs_url %}
 {% url 'complaints:view' as view_complaints_url %}
+{% url 'jobs:view mine' as view_mine_url%}
 <body>
     <div>
         <nav class="navbar navbar-expand-lg navbar-dark bg-hustle">
@@ -45,7 +46,7 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li><a class="dropdown-item" href="{{ url }}/jobs/create">Post a Job</a></li>
-                                <li><a class="dropdown-item" href="{{ url }}/jobs/view/mine">View My Jobs</a></li>
+                                <li><a class="dropdown-item" href="{{ view_mine_url }}">View My Jobs</a></li>
                                 <li><a class="dropdown-item" href="{{ url }}/complaints/create">File a Complaint</a>
                                 </li>
                             </ul>
@@ -62,7 +63,8 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="{{ url }}/jobs/view">Find Jobs</a></li>
+                                <li><a class="dropdown-item" href="{{ view_mine_url }}">View My Jobs</a></li>
+                                <li><a class="dropdown-item" href="{{ view_jobs_url }}">Find Jobs</a></li>
                                 <li><a class="dropdown-item" href="#">View Bids</a></li>
                             </ul>
                         </li>
