@@ -6,7 +6,7 @@ from .forms import ComplaintForm
 from .models import Complaint
 from django.contrib import messages
 from datetime import datetime
-from main.auth import user_is_authenticated, user_in_group
+from main.auth import user_is_authenticated, user_in_group, is_in_group
 
 
 @user_is_authenticated()
@@ -27,8 +27,10 @@ def create(request):
 
 
 @user_is_authenticated()
-@user_in_group("Customer")
+@user_in_group("Customer", "Owner")
 def view(request):
+    if is_in_group(request.user, "Owner"):
+        return redirect("complaints:viewAll")
     open_complaints = Complaint.objects.filter(user=request.user, state='open')
     reimbursed_complaints = Complaint.objects.filter(user=request.user, state='reimbursed')
     closed_complaints = Complaint.objects.filter(user=request.user, state='closed')

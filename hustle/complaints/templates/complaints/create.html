@@ -19,11 +19,19 @@
         </div>
         {% endfor %}
         <button class="btn btn-success mb-2" type="submit">Submit</button>
-        <button class="btn btn-outline-danger mb-2" type="submit">Discard</button>
+	<button class="btn btn-outline-danger mb-2" type="button" onclick="cancelFunction()">Discard</button>
       </form>
       <p class="text-center">Your complaint will be reviewed by the site owner.</p>
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+	function cancelFunction() {
+		if (confirm("Are you sure you want to discard this complaint?") == true) {
+			document.location.href='{% url "complaints:view" %}'
+		}
+	}
+</script>
 
 {% endblock %}
