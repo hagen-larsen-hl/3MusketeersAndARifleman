@@ -36,7 +36,23 @@ The next steps are subject to change.
 
 ## Unit Testing Instructions
 
-Unit tests will cover all use cases laid out in the use case diagrams. Once they are implemented they will be in the "hustle" folder under "unitTests"
+To run the unit tests first follow all the build instructions expect for actally running the main server then:
+run ``` python manage.py test ```
+
+if all the tests pass you will see this:
+
+```
+Creating test database for alias 'default'...
+....
+----------------------------------------------------------------------
+Ran 4 tests in 1.028s
+
+OK
+Destroying test database for alias 'default'...
+System check identified no issues (0 silenced).
+```
+
+The unit tests test all the data base obejcts to make sure that everything is working with inserting things into the database and making sure the connectins all work
 
 ## System Testing Instructions
 
@@ -49,12 +65,8 @@ that the app is running, open an internet browser and enter the address localhos
 
 ### Naming Conventions
 #### The naming conventions for variables, functions, classes, and everything else (subject to change)
-- Variables: normalVariableName, CONSTANT_VARIABLE_NAME
-- functions/methods: normalFunctionName(), normalMethodName()
+- Variables: normal_variableName, CONSTANT_VARIABLE_NAME
+- functions/methods: normal_functionName(), normal_MethodName()
 - classes: NormalClassName
-#### How commenting will work (subject to change)
-- Before every class describing what the class does
-- Before every method and function describing what they do
-- leave TODO comments on unfinished parts of code metioning what still needs to be done
 
 
