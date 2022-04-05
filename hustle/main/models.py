@@ -18,6 +18,12 @@ class CustomerData(models.Model):
 
 class WorkerData(models.Model):
     user = models.OneToOneField(User, verbose_name="User", related_name="worker_data", on_delete=models.CASCADE, primary_key=True)
+    
+    def get_rating(self):
+        if hasattr(self.user, "review_set"):
+            return (self.user.review_set.count(), self.user.review_set.all().aggregate(models.Avg('rating')))
+        else:
+            return 0
 
 class BlackList(models.Model):
     user = models.ForeignKey(User, related_name="user_blackList",  on_delete=models.CASCADE, default=1)

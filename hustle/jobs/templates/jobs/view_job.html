@@ -76,21 +76,22 @@
                                 {{ bid.user }}
                             </td>
                             <td>
-
+				{% if user.customer_data %}
                                 <form method="post" action="{{ url }}/jobs/accept_bid/{{ job.id }}/{{ bid.id }}">
                                     {% csrf_token %}
                                     <input class="btn btn-hustle" type="submit" value="Accept"></input>
                                 </form>
-
+				{% endif %}
                             </td>
                         </tr>
                         {% endfor %}
                     </table>
                 </div>
+		{% if user.worker_data %}
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <div class="">
                         <h5>Submit A New Bid</h5>
-                        <form method="POST">
+			<form method="POST" action="{% url 'jobs:bid job' job.id %}">
                             {% csrf_token %}
                             <div class="fieldWrapper">
                                 {{ job_bid_form.bid|as_crispy_field }}
@@ -100,13 +101,12 @@
                             </div>
                         </form>
                     </div>
-                    {% else %}
-                    {% if not job.complete %}
-                    <a class="btn btn-warning m-1" style="float: right"
-                        href="{% url 'jobs:cancel accept bid' job.id %}">Cancel
-                        Accepted Bid</a>
-                    {% endif %}
                 </div>
+		{% endif %}
+                {% elif not job.complete %}
+		<a class="btn btn-warning m-1"
+                    href="{% url 'jobs:cancel accept bid' job.id %}">Cancel
+		    Accepted Bid</a></div>
                 {% endif %}
             </div>
             {% if job.customer == user %}

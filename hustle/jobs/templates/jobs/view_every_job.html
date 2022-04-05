@@ -2,6 +2,20 @@
 
 {% block content %}
 
+<div class="card m-3 w-10">
+    <div class="card-header">
+	<h4 style="display: inline-block">Filter</h4>
+    </div>
+    <div class="card-body">
+	<form action="">
+	    <div class="form-check"><input class="form-check-input" type="checkbox" value="True" id="cancelledCheck" name="cancelled">Cancelled</input></div>
+	    <div class="form-check"><input class="form-check-input" type="checkbox" value="True" id="completedCheck" name="complete">Completed</input></div>
+	    <div class="form-check"><input class="form-check-input" type="checkbox" value="None" id="noBidCheck" name="accepted_bid">No accepted bid</input></div>
+	    {% if user.worker_data %}<div class="form-check"><input class="form-check-input" type="checkbox" value="{{ user.pk }}" id="myBidCheck" name="accepted_bid__user__pk">My bid accepted</input></div>{% endif %}
+	    <button type="Submit">Submit</button>
+	</form>
+    </div>
+</div>
 <div class="card m-3 w-75">
     <div class="card-header">
         <h2 style="display: inline-block">All Jobs</h2>
