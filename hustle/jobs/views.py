@@ -72,6 +72,19 @@ def view_job(request, job_id):
         job = Job.objects.get(pk=job_id)
     except Job.DoesNotExist:
         return redirect("jobs:view")
+    form = NewJobBidForm()
+    bids = Bid.objects.filter(selected_job_id=job_id)
+
+    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids})
+
+
+@user_is_authenticated()
+@user_in_group("Worker")
+def bid_on_job(request, job_id):
+    try:
+        job = Job.objects.get(pk=job_id)
+    except Job.DoesNotExist:
+        return redirect("jobs:view")
     if request.method == "POST":
         form = NewJobBidForm(request.POST)
         bid = form.instance
@@ -80,26 +93,11 @@ def view_job(request, job_id):
         errors = form.errors
         if form.is_valid():
             bid.save()
-            messages.success(request, "Bid submitted successfully.")
-            # return redirect("jobs:view")
-        else:
-            messages.error(request, errors)
-            messages.error(request, "There was invalid information in your bid form. Please review and try again.")
-    form = NewJobBidForm()
-    bids = Bid.objects.filter(selected_job_id=job_id)
+            return redirect("jobs:view job", job_id)
+    return redirect("jobs:view job", job_id)
 
-    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids})
 
-@user_is_authenticated()
-def accept_bid(request,bid_id):
-    bid = Bid.objects.get(pk=bid_id)
-    job = bid.selected_job
-    job.claimed_user = bid.user
-    job.accepted_bid = bid
-    job.save()
-
-    return redirect("jobs:view job",job.id)
-
+@user_in_group("Worker")
 @user_is_authenticated()
 def complete_job(request,job_id):
     job = Job.objects.get(pk=job_id)
@@ -120,6 +118,8 @@ def complete_job(request,job_id):
 
     return redirect("jobs:view job",job.id)
 
+
+@user_in_group("Customer")
 @user_is_authenticated()
 def cancel_accept_bid(request,job_id):
     job = Job.objects.get(pk=job_id)
@@ -129,12 +129,23 @@ def cancel_accept_bid(request,job_id):
 
     return redirect("jobs:view job",job.id)
 
+
 @user_is_authenticated()
 def view_all_jobs(request):
-    jobs = Job.objects.filter(complete=False)
+    if request.GET:
+        filter_lists = {}
+        for k,v in request.GET.lists():
+            if len(v) > 1:
+                filter_lists[k + "__in"] = v
+            else:
+                filter_lists[k] = v[0]
+        jobs = Job.objects.filter(**filter_lists)
+    else:
+        jobs = Job.objects.filter(complete=False, cancelled=False, accepted_bid=None)
     return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs})
 
 
+@user_in_group("Customer")
 @user_is_authenticated()
 def accept_bid(request, job_id, bid_id):
     try:
@@ -149,6 +160,7 @@ def accept_bid(request, job_id, bid_id):
             job.accepted_bid_id = bid_id
             job.save()
         return redirect("jobs:view job", job_id)
+
 
 @user_is_authenticated()
 def cancel_job(request, job_id):
