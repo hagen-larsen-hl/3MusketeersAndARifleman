@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class JobType(models.Model):
     type = models.CharField(max_length=30, default="Mow Lawn")
-    ownerCut = models.DecimalField(max_digits=5, decimal_places=2, default=0.05)
+    ownerCut = models.DecimalField(max_digits=5, decimal_places=2, default=0.1)
     canceledTime = models.IntegerField(default=24)
 
     def __str__(self):
