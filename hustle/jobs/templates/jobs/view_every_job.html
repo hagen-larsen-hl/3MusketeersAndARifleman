@@ -2,16 +2,16 @@
 
 {% block content %}
 
-<div class="card col-12 col-md-4 col-xl-3">
+<div class="card order-2 order-md-0 col-12 col-md-4 col-xl-3">
     <div class="card-header">
 	<h4 style="display: inline-block">Filter</h4>
     </div>
-    <div class="card-body">
+    <div class="card-body" id="filterBody">
 	<form action="" id="filterForm" onchange="something_changed(this, event)">
 	    <h5>State</h5>
 	    <div class="form-check form-switch">
 		<input class="form-check-input" type="radio" id="anyFilter" name="state"
-			value="any" {% if queries.state %}checked{% endif %} />
+			value="any" {% if "any" in queries.state %}checked{% endif %} />
 		<label class="form-check-label" for="anyFilter"> Any </label>
 	    </div>
 	    <div class="form-check form-switch">
@@ -45,7 +45,7 @@
 	    {% endfor %}
 	    </div>
 	    <div class="form-group">
-		<input style="display:inline-block;width:10em" class="form-control" type="number" id="zip_new" placeholder="New Zip Code" />
+		<input style="display:inline-block;width:10em" class="form-control" type="number" id="zip_new" placeholder="New Zip Code" onkeypress="new_zip_keypress(event)" />
 	    	<button style="display:inline-block;margin-bottom:2pt" type="button" class="btn btn-outline-success" onclick="add_new_zip()">Add</button>
 	    </div>
 	    <h5 class="mt-3">Work Type</h5>
@@ -94,6 +94,12 @@
 </div>
 
 <script type="text/javascript">
+	function new_zip_keypress(event) {
+		if (event.keyCode == 13) {
+			event.preventDefault();
+			add_new_zip();
+		}
+	}
 	function append_zip_code(value) {
 		var group = document.getElementById("zip_group");
 		
@@ -108,7 +114,8 @@
 		input.value = value;
 		input.className = "form-check-input";
 		input.setAttribute("onchange", "toggle_zip_code(this)");
-		input.style.backgroundColor = "red";
+		input.style.backgroundColor = "#ffc107";
+		input.style.borderColor = "#b28705";
 
 		var label = document.createElement("label");
 		label.className = "form-check-label";
@@ -133,34 +140,45 @@
 	}
 	function add_new_zip() {
 		input = document.getElementById("zip_new");
-		append_zip_code(input.value);
-		input.value = "";
-		something_changed(input.form);
+		if (input.value.match(/^[0-9]{5}$/g)) {
+			append_zip_code(input.value);
+			input.value = "";
+			something_changed(input.form);
+		} else {
+			input.style.backgroundColor = "red";
+			window.setTimeout(() => {input.style.backgroundColor = null;}, 100);
+		}
 	}
 	function something_changed(form) {
 		var hasChanges = false;
 		document.querySelectorAll("input[value]").forEach(el => {
 			if (el.value == el.getAttribute("value")) {
 				el.style.backgroundColor = null;
+				el.style.borderColor = null;
 			} else {
-				el.style.backgroundColor = "red";
+				el.style.backgroundColor = "#ffc107";
+				el.style.borderColor = "#b28705";
 				hasChanges = true;
 			}
 		});
-		document.querySelectorAll("input[checked]").forEach(el => {
+		document.querySelectorAll("[type=checkbox][checked],[type=radio][checked]").forEach(el => {
 			if (!el.checked) {
-				el.style.backgroundColor = "red";
+				el.style.backgroundColor = "#ffc107";
+				el.style.borderColor = "#b28705";
 				hasChanges = true;
 			} else {
 				el.style.backgroundColor = null;
+				el.style.borderColor = null;
 			}
 		});
-		document.querySelectorAll("input:not([checked])").forEach(el => {
+		document.querySelectorAll("[type=checkbox]:not([checked]),[type=radio]:not([checked])").forEach(el => {
 			if (el.checked) {
-				el.style.backgroundColor = "red";
+				el.style.backgroundColor = "#ffc107";
+				el.style.borderColor = "#ffc107";
 				hasChanges = true;
 			} else {
 				el.style.backgroundColor = null;
+				el.style.borderColor = null;
 			}
 		});
 		if (hasChanges) {
