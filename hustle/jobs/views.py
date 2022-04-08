@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import NewJobForm, NewJobBidForm
 from django.contrib import messages
 from main.auth import user_passes_test, user_is_authenticated, user_in_group
-from .models import Job, Bid
+from .models import Job, Bid, JobType
 from django.contrib.auth.models import Group, User
 
 
@@ -130,19 +130,52 @@ def cancel_accept_bid(request,job_id):
     return redirect("jobs:view job",job.id)
 
 
+def _job_filter_from(key, values):
+    out = {}
+    if key == "state":
+        if "open" in values:
+            out["complete"] = False
+            out["cancelled"] = False
+            out["accepted_bid__isnull"] = True
+        if "accepted" in values:
+            out["accepted_bid__isnull"] = False
+        if "completed" in values:
+            out["complete"] = True
+        if "cancelled" in values:
+            out["cancelled"] = True
+    elif key == "zip_code":
+        out["zip_code__in"] = values
+    elif key == "type":
+        out["type__type__in"] = values
+    elif values[0]:
+        if key == "estimate_min":
+            out["time_estimate__gte"] = values[0]
+        elif key == "estimate_max":
+            out["time_estimate__lte"] = values[0]
+        elif key == "start_time_min":
+            out["completion_window_start__gte"] = values[0]
+        elif key == "start_time_max":
+            out["completion_window_start__lte"] = values[0]
+        elif key == "end_time_min":
+            out["completion_window_end__gte"] = values[0]
+        elif key == "end_time_max":
+            out["completion_window_end__lte"] = values[0]
+    return out
+
+def _job_filters_from(queries):
+    filters = {}
+    for k,v in queries.items():
+        filters = {**filters, **_job_filter_from(k,v)}
+    return filters
+
 @user_is_authenticated()
 def view_all_jobs(request):
+    queries = {"state": ["open"]}
     if request.GET:
-        filter_lists = {}
-        for k,v in request.GET.lists():
-            if len(v) > 1:
-                filter_lists[k + "__in"] = v
-            else:
-                filter_lists[k] = v[0]
-        jobs = Job.objects.filter(**filter_lists)
-    else:
-        jobs = Job.objects.filter(complete=False, cancelled=False, accepted_bid=None)
-    return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs})
+        queries = dict(request.GET.lists())
+    filters = _job_filters_from(queries)
+    jobs = Job.objects.filter(**filters)
+    return render(request=request, template_name='jobs/view_every_job.html', context={"jobs": jobs, "work_types": JobType.objects.all(), "queries": queries})
 
 
 @user_in_group("Customer")
