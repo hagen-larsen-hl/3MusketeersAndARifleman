@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from .forms import NewJobForm, NewJobBidForm
 from django.contrib import messages
@@ -75,7 +76,13 @@ def view_job(request, job_id):
     form = NewJobBidForm()
     bids = Bid.objects.filter(selected_job_id=job_id)
 
-    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids})
+
+    if job.accepted_bid is not None:
+        time_left = dateSubtractAndConvert(job.accepted_bid.accepted_time) - job.type.canceledTime
+    else:
+        time_left = 0
+
+    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids, "time_left": time_left})
 
 
 @user_is_authenticated()
@@ -118,8 +125,6 @@ def complete_job(request,job_id):
 
     return redirect("jobs:view job",job.id)
 
-
-@user_in_group("Customer")
 @user_is_authenticated()
 def cancel_accept_bid(request,job_id):
     job = Job.objects.get(pk=job_id)
@@ -157,7 +162,13 @@ def accept_bid(request, job_id, bid_id):
         if not bids:
             return redirect("jobs:view")
         else:
+            bid = Bid.objects.get(pk=bid_id)
+
+            bid.accepted_time = datetime.datetime.now(datetime.timezone.utc)
+            bid.save()
+
             job.accepted_bid_id = bid_id
+            job.claimed_user = bid.user
             job.save()
         return redirect("jobs:view job", job_id)
 
@@ -172,4 +183,9 @@ def cancel_job(request, job_id):
         job.cancelled = True
         job.save()
         return redirect("jobs:view")
+
+
+def dateSubtractAndConvert(bidTime):
+    print((bidTime - datetime.datetime.now(datetime.timezone.utc)).seconds / 60 / 60)
+    return (bidTime - datetime.datetime.now(datetime.timezone.utc)).seconds / 60 / 60
 

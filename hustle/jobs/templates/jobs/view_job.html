@@ -29,9 +29,9 @@
         </div>
         <div class="card-body justify-content-center">
             <div>
-                {% if job.accepted_bid != null %}
+                {% if job.claimed_user != null %}
                 <div class="m-2">
-                    <p>Accepted User: {% include 'main/user_link.html' with user=job.accepted_bid.user %}</p>
+                    <p>Accepted User: {% include 'main/user_link.html' with user=job.claimed_user %}</p>
                     <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
                 </div>
                 {% endif %}
@@ -104,9 +104,11 @@
                 </div>
 		{% endif %}
                 {% elif not job.complete %}
-		<a class="btn btn-warning m-1"
-                    href="{% url 'jobs:cancel accept bid' job.id %}">Cancel
-		    Accepted Bid</a></div>
+                    {% if time_left > 0%}
+		            <a class="btn btn-warning m-1" href="{% url 'jobs:cancel accept bid' job.id %}">Cancel Accepted Bid</a> {time_left} Hours Left </div>
+                    {% else %}
+                    <div class="btn text-light bg-secondary m-1">Cancel Accepted Bid</div> Times up </div>
+                    {% endif %}
                 {% endif %}
             </div>
             {% if job.customer == user %}
@@ -114,12 +116,20 @@
                 <div class="col-6">
                     <a class="btn btn-hustle w-100" href="{% url 'complaints:create' %}">File A Complaint</a>
                 </div>
+
+                {% if not job.accepted_bid %}
                 <div class="col-6">
                     <form class="w-100" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
                         {% csrf_token %}
                         <input class="w-100 btn btn-danger" type="submit" value="Cancel Job"></input>
                     </form>
                 </div>
+                {% else %}
+                <div class="col-6">
+                    <div class="w-100 btn text-light bg-secondary">Cancel Job</div>
+                </div>
+                {% endif %}
+
             </div>
             {% endif %}
         </div>
