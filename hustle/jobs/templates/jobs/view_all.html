@@ -17,30 +17,16 @@
         <!--Job Cards-->
         <div class="accordion">
           <div class="accordion-item">
-            <h2 class="accordion-header" id="open_jobs_section_header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#open_jobs_section" aria-expanded="false" aria-controls="open_jobs_section">
-                <strong>Open ({{ open_jobs.count }})</strong>
+            <h2 class="accordion-header" id="active_jobs_section_header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#active_jobs_section" aria-expanded="false" aria-controls="active_jobs_section">
+                <strong>Active ({{ active_jobs.count }})</strong>
               </button>
             </h2>
-            <div id="open_jobs_section" class="accordion-collapse collapse" aria-labelledby="open_jobs_section_header">
+            <div id="active_jobs_section" class="accordion-collapse collapse" aria-labelledby="active_jobs_section_header">
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
-                  {% for job in open_jobs %}
-                  <div class="col">
-                    <div class="card m-1">
-                      <div class="card-header">
-                          <h5 class="my-2" style="float: left">Job #{{ job.id }}</h5>
-                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ job.get_state_display }}</span></h5>
-                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/update/{{ job.id }}">Edit</a>
-                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
-                      </div>
-                      <div class="card-body">
-                        <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>
-                        <p id="time_estimate{{ job.id }}"><strong>Time Estimate:</strong> {{ job.time_estimate }}</p>
-                        <p id="accepted_bid{{ job.id }}"><strong>Accepted Bid:</strong> {{ job.accepted_bid }}</p>
-                      </div>
-                    </div>
-                  </div>
+                  {% for job in active_jobs %}
+		  {% include "jobs/job_card.html" with job=job %}
                   {% endfor %}
                 </div>
               </div>
@@ -56,19 +42,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for job in completed_jobs %}
-                    <div class="col">
-                    <div class="card m-1">
-                      <div class="card-header">
-                          <h5 class="my-2" style="float: left">Job #{{ job.id }}</h5>
-                          <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
-                      </div>
-                      <div class="card-body">
-                           <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>
-                           <p id="time_estimate{{ job.id }}"><strong>Time Estimate:</strong> {{ job.time_estimate }}</p>
-                           <p id="bid{{ job.id }}"><strong>Bid:</strong> {{ job.bid }}</p>
-                      </div>
-                    </div>
-                  </div>
+		  {% include "jobs/job_card.html" with job=job %}
                   {% endfor %}
                 </div>
               </div>
@@ -84,19 +58,7 @@
                   <div class="accordion-body">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                       {% for job in cancelled_jobs %}
-                        <div class="col">
-                        <div class="card m-1">
-                          <div class="card-header">
-                              <h5 class="my-2" style="float: left">Job #{{ job.id }}</h5>
-                              <a class="btn btn-secondary m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
-                          </div>
-                          <div class="card-body">
-                               <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>
-                               <p id="time_estimate{{ job.id }}"><strong>Time Estimate:</strong> {{ job.time_estimate }}</p>
-                               <p id="bid{{ job.id }}"><strong>Bid:</strong> {{ job.bid }}</p>
-                          </div>
-                        </div>
-                      </div>
+		      {% include "jobs/job_card.html" with job=job %}
                       {% endfor %}
                     </div>
                   </div>

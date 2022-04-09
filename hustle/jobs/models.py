@@ -24,9 +24,15 @@ class Job(models.Model):
     claimed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="claimed_user", null=True)
     cancelled = models.BooleanField(name="cancelled", default=False)
 
-    def request_from_owner(self, request):
-        return True
-        # return customer == request.user
+    def get_state(self):
+        if self.cancelled:
+            return ("Cancelled", "danger")
+        elif self.complete:
+            return ("Completed", "success")
+        elif self.accepted_bid is not None:
+            return ("Accepted Bid", "secondary")
+        else:
+            return ("Open", "primary")
 
 
 class Bid(models.Model):

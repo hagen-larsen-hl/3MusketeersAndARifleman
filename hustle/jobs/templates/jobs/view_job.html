@@ -28,6 +28,11 @@
             </h2>
         </div>
         <div class="card-body justify-content-center">
+	    {% if job.cancelled %}
+	    <center>
+		<h1 style="color:red">Job Cancelled</h1>
+	    </center>
+	    {% endif %}
             <div>
                 {% if job.claimed_user != null %}
                 <div class="m-2">
@@ -45,21 +50,17 @@
                     <p>Zip Code: {{ job.zip_code }}</p>
                 </div>
 
+                {% if job.accepted_bid.user == user and not job.complete %}
                 <div class="m-2">
-                    {% if job.claimed_user == user %}
-                    {% if not job.complete %}
-                    <a class="btn btn-hustle-secondary m-1" href="{% url 'jobs:complete job' job.id %}">Mark
+                    <a class="btn btn-hustle-secondary m-1" onclick="return confirm('Are you sure?')" href="{% url 'jobs:complete job' job.id %}">Mark
                         Complete</a>
-                    {% endif %}
-                    {% endif %}
                 </div>
-
-                {% if job.complete %}
-                <div class="m-1">Job Completed</div>
+                {% elif job.complete %}
+		<center><h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5></center>
                 {% endif %}
             </div>
             <div>
-                {% if not job.complete and not job.accepted_bid %}
+                {% if job.get_state.0 == "Open" %}
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <h2>Current Bids</h2>
                     <table class="table table-sm m-4">
@@ -111,7 +112,7 @@
                     {% endif %}
                 {% endif %}
             </div>
-            {% if job.customer == user %}
+            {% if job.customer == user and not job.cancelled %}
             <div class="m-2 bg-light p-4 rounded border border-hustle row">
                 <div class="col-6">
                     <a class="btn btn-hustle w-100" href="{% url 'complaints:create' %}">File A Complaint</a>
