@@ -80,7 +80,7 @@ def view_job(request, job_id):
 
 
     if job.accepted_bid is not None:
-        time_left = dateSubtractAndConvert(job.accepted_bid.accepted_time) - job.type.canceledTime
+        time_left = dateSubtractAndConvert(job.accepted_bid.date_time) - job.type.canceledTime
     else:
         time_left = 0
 
@@ -119,8 +119,8 @@ def complete_job(request,job_id):
     job.accepted_bid.user.data.money += workerCut
 
     #this dosen't work for some reason
-    User.objects.filter(groups__name="Owner").first().data.money += ownerCut
-    User.objects.filter(groups__name="Owner").first().data.save()
+    #User.objects.filter(groups__name="Owner").first().data.money += ownerCut
+    #User.objects.filter(groups__name="Owner").first().data.save()
 
     job.customer.data.save()
     job.accepted_bid.user.data.save()
@@ -208,8 +208,8 @@ def accept_bid(request, job_id, bid_id):
         else:
             bid = Bid.objects.get(pk=bid_id)
 
-            bid.accepted_time = datetime.datetime.now(datetime.timezone.utc)
-            bid.save()
+            #bid.date_time = datetime.datetime.now(datetime.timezone.utc)
+            #bid.save()
 
             job.accepted_bid_id = bid_id
             job.claimed_user = bid.user
@@ -230,6 +230,8 @@ def cancel_job(request, job_id):
 
 
 def dateSubtractAndConvert(bidTime):
-    print((bidTime - datetime.datetime.now(datetime.timezone.utc)).seconds / 60 / 60)
-    return (bidTime - datetime.datetime.now(datetime.timezone.utc)).seconds / 60 / 60
+
+    bt = ((bidTime - datetime.datetime.now(datetime.timezone.utc)  - datetime.timedelta(hours=6)))
+
+    return int((bt.days * 24) + (bt.seconds / 3600))
 

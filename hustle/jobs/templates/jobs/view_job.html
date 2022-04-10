@@ -39,6 +39,7 @@
                 <div class="m-2">
                     <p>Accepted User: {% include 'main/user_link.html' with user=job.claimed_user %}</p>
                     <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                    <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
                 </div>
                 {% endif %}
 
@@ -112,7 +113,7 @@
 		{% endif %}
                 {% elif not job.complete %}
                     {% if time_left > 0%}
-		            <a class="btn btn-warning m-1" href="{% url 'jobs:cancel accept bid' job.id %}">Cancel Accepted Bid</a> {time_left} Hours Left </div>
+		            <a class="btn btn-warning m-1" href="{% url 'jobs:cancel accept bid' job.id %}">Cancel Accepted Bid</a> {{time_left}} Hours Left </div>
                     {% else %}
                     <div class="btn text-light bg-secondary m-1">Cancel Accepted Bid</div> Times up </div>
                     {% endif %}
