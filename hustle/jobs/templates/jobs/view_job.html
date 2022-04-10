@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
 
@@ -66,6 +67,7 @@
                         <tr>
                             <th>Bid</th>
                             <th>User</th>
+                            <th>Date/Time</th>
                         </tr>
                         {% for bid in bids %}
                         <tr>
@@ -74,6 +76,9 @@
                             </td>
                             <td>
                                 {{ bid.user }}
+                            </td>
+                            <td>
+                                {{ bid.date_time }}
                             </td>
                             <td>
 				{% if user.customer_data %}
@@ -95,6 +100,7 @@
                             {% csrf_token %}
                             <div class="fieldWrapper">
                                 {{ job_bid_form.bid|as_crispy_field }}
+                                {{ job_bid_form.date_time|as_crispy_field }}
                             </div>
                             <div class=" my-2">
                                 <button class="btn btn-hustle" type="submit">Submit</button>

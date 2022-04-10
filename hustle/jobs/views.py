@@ -127,7 +127,7 @@ def cancel_accept_bid(request,job_id):
     job.accepted_bid = None
     job.save()
 
-    return redirect("jobs:view job",job.id)
+    return redirect("jobs:view job", job.id)
 
 
 @user_is_authenticated()

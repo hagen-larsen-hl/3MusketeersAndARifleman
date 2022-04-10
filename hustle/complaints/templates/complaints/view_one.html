@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
 
@@ -15,6 +16,17 @@
   </div>
     <div class="card-body">
       <p id="created_date"><strong>Created On: </strong>{{ complaint.create_date }}</p>
+    <div>
+        Requested From: {{ complaint.user }}<br>
+        Reason: {{ complaint_reason }}<br>
+        Description: {{ complaint.description }}<br>
+    </div>
+        {% if complaint_url %}
+            <div>
+                Attached Image:<br>
+                <img src="{{ complaint_url }}"/>
+            </div>
+        {% endif %}
       {% if complaint.state == "open" %}
         <button class="btn btn-success mb-2" id="reimburse_button">Reimburse</button>
         <a class="btn btn-outline-secondary mb-2" href="{{ url }}/complaints/close/{{ complaint.id }}">Mark As Closed</a>
