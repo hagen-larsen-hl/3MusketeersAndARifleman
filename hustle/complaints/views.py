@@ -13,7 +13,7 @@ from main.auth import user_is_authenticated, user_in_group, is_in_group
 @user_in_group("Customer")
 def create(request):
     if request.method == "POST":
-        form = ComplaintForm(request.POST)
+        form = ComplaintForm(request.POST, request.FILES)
         if form.is_valid():
             complaint = form.save()
             complaint.create_date = datetime.today()
@@ -41,7 +41,20 @@ def view(request):
 @user_in_group("Owner")
 def viewOne(request, complaint_id):
     complaint = get_object_or_404(Complaint, pk=complaint_id)
-    return render(request, 'complaints/view_one.html', {'complaint': complaint})
+    if complaint.image:
+        complaint_url = complaint.image.url[11:]
+    else:
+        complaint_url = None
+    if complaint.reason == "no_show":
+        index = 0
+    elif complaint.reason == "bad_job":
+        index = 1
+    elif complaint.reason == "suspicious":
+        index = 2
+    else:
+        index = 4
+    complaint_reason = complaint.REASONS[index][1]
+    return render(request, 'complaints/view_one.html', {'complaint': complaint, 'complaint_url': complaint_url, 'complaint_reason': complaint_reason})
 
 
 @user_is_authenticated()
