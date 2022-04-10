@@ -40,3 +40,4 @@ class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE)
     date_time = models.DateTimeField(default=datetime.now, blank=True)
+

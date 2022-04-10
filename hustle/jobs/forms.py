@@ -10,7 +10,9 @@ class NewJobForm(forms.ModelForm):
 
 
 class NewJobBidForm(forms.ModelForm):
+
     class Meta:
         model = Bid
+
         fields = ["bid", "date_time"]
 
