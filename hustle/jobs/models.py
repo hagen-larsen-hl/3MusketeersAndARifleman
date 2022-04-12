@@ -33,11 +33,27 @@ class Job(models.Model):
             return ("Accepted Bid", "secondary")
         else:
             return ("Open", "primary")
-
+    
+    def __str__(self):
+        return f"Job #{self.id}: {self.get_state()[0]}"
+    
 
 class Bid(models.Model):
     bid = models.DecimalField(max_digits=100, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE)
     date_time = models.DateTimeField(default=datetime.now, blank=True)
+
+    def get_state(self):
+        if self.selected_job.cancelled:
+            return ("Cancelled", "danger")
+        if hasattr(self, "accepted_bid") and self.accepted_bid.exists():
+            if self.selected_job.complete:
+                return ("Completed", "success")
+            else:
+                return ("Accepted", "info")
+        elif self.selected_job.accepted_bid is not None:
+            return ("Rejected", "danger")
+        else:
+            return ("Active", "secondary")
 

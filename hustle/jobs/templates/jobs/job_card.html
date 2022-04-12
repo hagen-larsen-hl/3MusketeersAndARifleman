@@ -1,12 +1,14 @@
 
+{% load blacklist %}
+
 <div class="col">
-   <div class="card m-1 border-{{ job.get_state.1 }}">
+   <div class="card m-1 border-{{ job.get_state.1|unless:user|blacklists:job.customer }}">
       <div class="card-header">
-          <h5 class="my-2" style="float: left">Job #{{ job.id }} <div> {% include 'main/user_link.html' with user=job.customer %}</div> </h5>
-	  {% if job.customer == user %}
+          <h5 class="my-2" style="float: left">Job #{{ job.id }} <div> {% include 'main/user_link.html' with person=job.customer %}</div> </h5>
+	  {% if job.customer == user and job.get_state.0 == "Open" %}
 	  <a class="btn btn-{{ job.get_state.1 }} m-1" style="float: right" href="{{ url }}/jobs/update/{{ job.id }}">Edit</a>
 	  {% endif %}
-	  <a class="btn btn-{{ job.get_state.1 }} m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
+	  <a class="btn btn-{{ job.get_state.1|unless:user|blacklists:job.customer }} m-1" style="float: right" href="{{ url }}/jobs/view/{{ job.id }}">View</a>
       </div>
       <div class="card-body">
         <p id="type{{ job.id }}"><strong>Type:</strong> {{ job.type }}</p>
@@ -17,7 +19,7 @@
         {% if job.customer == user and job.complete %}
 	<a class="btn btn-{{ job.get_state.1 }}" id="review" href="{{ url }}/reviews/create">Leave Review</a>
         {% else %}
-	<p id="state{{ job.id }}" class="text-{{ job.get_state.1 }}"><strong>State:</strong> {{ job.get_state.0 }}</p>
+	<p id="state{{ job.id }}" class="text-{{ job.get_state.1|unless:user|blacklists:job.customer }}"><strong>State:</strong> {{ job.get_state.0 }}</p>
 	{% endif %}
       </div>
     </div>

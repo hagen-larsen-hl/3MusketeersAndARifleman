@@ -5,6 +5,7 @@ from django.contrib import messages
 from main.auth import user_passes_test, user_is_authenticated, user_in_group
 from .models import Job, Bid, JobType
 from django.contrib.auth.models import Group, User
+from django.db.models import Q
 import sys
 import re
 
@@ -24,7 +25,8 @@ def create_job_request(request):
             return redirect("jobs:view mine")
         messages.error(request, errors)
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
-    form = NewJobForm()
+    else:
+        form = NewJobForm()
     return render(request=request, template_name='jobs/job_form.html', context={"create_job_form": form})
 
 
@@ -43,6 +45,28 @@ def view(request):
     
     return render(request=request, template_name="jobs/view_all.html", context={"active_jobs": active_jobs, "completed_jobs": completed_jobs, "isWorker": isWorker, "cancelled_jobs": cancelled_jobs})
 
+@user_is_authenticated()
+@user_in_group("Worker")
+def view_bids(request):
+    bid_from_user = Q(user=request.user)
+    bid_accepted = Q(accepted_bid__isnull=False, selected_job__cancelled=False)
+    bid_rejected = Q(accepted_bid__isnull=True, selected_job__accepted_bid__isnull=False)
+    bid_completed = Q(selected_job__complete=True)
+    bid_cancelled = Q(selected_job__cancelled=True)
+    accepted_state = bid_accepted   & ~bid_completed  & ~bid_cancelled
+    rejected_state = bid_cancelled  |  bid_rejected
+    complete_state = bid_accepted   &  bid_completed
+    active_state = ~accepted_state & ~rejected_state & ~complete_state
+
+    complete_bids = Bid.objects.filter(user=request.user, accepted_bid__isnull=False, selected_job__complete=True, selected_job__cancelled=False)
+    
+    return render(request=request, template_name="jobs/view_bids.html", context={"bids": [
+            ("accepted", Bid.objects.filter(bid_from_user, accepted_state)),
+            ("rejected", Bid.objects.filter(bid_from_user, rejected_state)),
+            ("active", Bid.objects.filter(bid_from_user, active_state)),
+            ("complete", Bid.objects.filter(bid_from_user, complete_state)),
+        ], "bid_count": Bid.objects.filter(user=request.user).count()})
+
 
 @user_is_authenticated()
 @user_in_group("Customer")
@@ -51,7 +75,7 @@ def update_job_request(request, job_id):
         job = Job.objects.get(pk=job_id)
     except Job.DoesNotExist:
         return redirect("jobs:view")
-    if not job.request_from_owner(request):
+    if not job.customer == request.user or job.cancelled or job.complete:
         return redirect("jobs:view")
     if request.method == "POST":
         form = NewJobForm(request.POST)
@@ -68,6 +92,7 @@ def update_job_request(request, job_id):
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
     form = NewJobForm(instance=job)
     return render(request=request, template_name='jobs/edit_job_form.html', context={"create_job_form": form})
+
 
 @user_is_authenticated()
 def view_job(request, job_id):
