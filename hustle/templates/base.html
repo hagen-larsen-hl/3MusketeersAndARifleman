@@ -35,30 +35,30 @@
                         {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link{% if request.get_full_path == profile_url %} active{% endif %}"
-                                aria-current="page" href="{{ profile_url }}">My Profile</a>
+                                aria-current="page" href="{{ profile_url }}">Profile</a>
                         </li>
                         {% if user.customer_data %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url }}/jobs/create">Post a Job</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ view_mine_url }}">View My Jobs</a>
+                            <a class="nav-link" href="{{ view_mine_url }}">My Posted Jobs</a>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url }}/complaints/create">File a Complaint</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url }}/complaints/view">View My Complaints</a>
+                            <a class="nav-link" href="{{ url }}/complaints/view">My Submitted Complaints</a>
                         </li>
                         {% endif %}
                         {% if user.worker_data %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ view_mine_url }}">View My Jobs</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ view_jobs_url }}">Find Jobs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ view_bids_url }}">View Bids</a>
+                            <a class="nav-link" href="{{ view_mine_url }}">My Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ view_bids_url }}">My Bids</a>
                         </li>
                         {% endif %}
                         {% if user.is_superuser %}

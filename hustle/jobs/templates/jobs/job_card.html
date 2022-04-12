@@ -18,9 +18,10 @@
         {% endif %}
       </div>
       <div class="card-footer">
+        {% if job.claimed_user == user and job.complete %}
         <a class="btn btn-hustle" id="survey" href="{{ url }}/surveys/create/{{ job.id }}">Complete Survey</a>
-        {% if job.customer == user and job.complete %}
-	      <a class="btn btn-hustle" id="review" href="{{ url }}/reviews/create">Review Worker</a>
+        {% elif job.customer == user and job.complete %}
+	      <a class="btn btn-hustle" id="review" href="{{ url }}/reviews/create/{{ job.claimed_user.id }}">Review Worker</a>
         {% else %}
 	      <p id="state{{ job.id }}" class="text-{{ job.get_state.1|unless:user|blacklists:job.customer }}"><strong>State:</strong> {{ job.get_state.0 }}</p>
 	      {% endif %}

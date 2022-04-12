@@ -73,3 +73,8 @@ body {
 .row {
   --bs-gutter-x: 0;
 }
+
+.scroll {
+  height:400px;
+  overflow-y: scroll;
+}

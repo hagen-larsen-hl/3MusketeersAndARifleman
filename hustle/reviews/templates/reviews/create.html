@@ -7,8 +7,8 @@
 <!--Write a Review-->
 <div class="d-flex justify-content-center container-sm">
     <div class="card m-5 w-50" >
-        <div class="card-header bg-success text-white">
-            Write a Review
+        <div class="card-header bg-hustle text-white">
+            Reviewing {{ worker.first_name }} {{ worker.last_name }}
         </div>
         <div class="card-body">
             <form method="POST">
@@ -19,7 +19,7 @@
                 </div>
                 {% endfor %}
                 <div class="justify-content-center">
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-hustle" type="submit">Submit</button>
                 </div>
             </form>
         </div>
