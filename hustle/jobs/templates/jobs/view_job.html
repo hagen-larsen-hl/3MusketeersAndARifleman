@@ -36,14 +36,6 @@
 	    </center>
 	    {% endif %}
             <div>
-                {% if job.claimed_user %}
-                <div class="m-2">
-                    <p>Accepted User: {% include 'main/user_link.html' with person=job.claimed_user %}</p>
-                    <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
-                    <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
-                </div>
-                {% endif %}
-
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <h3 class="pb-4">Job Details</h3>
                     <p>Type: {{ job.type }}</p>
@@ -52,6 +44,17 @@
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
                     <p>Zip Code: {{ job.zip_code }}</p>
                 </div>
+                {% if job.claimed_user != null %}
+                    <div class="m-2 bg-light p-4 rounded border border-hustle">
+                        {% if job.claimed_user %}
+                        <div class="m-2">
+                            <p>Accepted User: {% include 'main/user_link.html' with person=job.claimed_user %}</p>
+                            <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                            <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
 
                 {% if job.accepted_bid.user == user and not job.complete %}
                 <div class="m-2">
@@ -161,7 +164,6 @@
                     <a class="w-100 btn text-light bg-secondary" popover="focus hover" title="Cannot Cancel" data-bs-content="You must cancel the accepted bid in order to cancel the job.">Cancel Job</a>
                 </div>
                 {% endif %}
-
             </div>
             {% endif %}
         </div>

@@ -42,14 +42,14 @@
                                 Customer Tools
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="customerDropdown">
-                                <li><a class="dropdown-item" href="#">Customer Dashboard</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+{#                                <li><a class="dropdown-item" href="#">Customer Dashboard</a></li>#}
+{#                                <li>#}
+{#                                    <hr class="dropdown-divider">#}
+{#                                </li>#}
                                 <li><a class="dropdown-item" href="{{ url }}/jobs/create">Post a Job</a></li>
                                 <li><a class="dropdown-item" href="{{ view_mine_url }}">View My Jobs</a></li>
-                                <li><a class="dropdown-item" href="{{ url }}/complaints/create">File a Complaint</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ url }}/complaints/create">File a Complaint</a></li>
+                                <li><a class="dropdown-item" href="{{ url }}/complaints/view">View My Complaints</a></li>
                             </ul>
                         </li>
                         {% endif %}
@@ -60,13 +60,13 @@
                                 Worker Tools
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="workerDropdown">
-                                <li><a class="dropdown-item" href="#">Worker Dashboard</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+{#                                <li><a class="dropdown-item" href="#">Worker Dashboard</a></li>#}
+{#                                <li>#}
+{#                                    <hr class="dropdown-divider">#}
+{#                                </li>#}
                                 <li><a class="dropdown-item" href="{{ view_mine_url }}">View My Jobs</a></li>
                                 <li><a class="dropdown-item" href="{{ view_jobs_url }}">Find Jobs</a></li>
-				<li><a class="dropdown-item" href="{{ view_bids_url }}">View Bids</a></li>
+				                        <li><a class="dropdown-item" href="{{ view_bids_url }}">View Bids</a></li>
                             </ul>
                         </li>
                         {% endif %}
@@ -83,7 +83,7 @@
                                 </li>
                                 <li><a class="dropdown-item" href="{{ url }}/complaints/view/all">Process Complaints</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Configure Site Settings</a></li>
+{#                                <li><a class="dropdown-item" href="#">Configure Site Settings</a></li>#}
                             </ul>
                         </li>
                         {% endif %}
@@ -116,6 +116,11 @@
             <div class="bg-hustle text-white">
                 <div class="row" style="height: 500px">
                     <div class="col-3 p-5">
+                        <h4>HUSTLE</h4>
+                        <p>We hustle so you don't have to.</p>
+                        <p>Sign up today to post or complete jobs.</p>
+                    </div>
+                    <div class="col-3 p-5">
                         <h4>Contributors</h4>
                         <p>Jade Blunt</p>
                         <p>Bennett DenBleyker</p>
@@ -129,18 +134,11 @@
                         <p>Github - <a class="text-white" href="https://github.com/yodarocks1/3MusketeersAndARifleman">View</a></p>
                     </div>
                     <div class="col-3 p-5">
-                        <h4>Created By</h4>
-                        <p>Jade Blunt</p>
-                        <p>Bennett DenBleyker</p>
-                        <p>Jacob Haight</p>
-                        <p>Hagen Larsen</p>
-                    </div>
-                    <div class="col-3 p-5">
-                        <h4>Created By</h4>
-                        <p>Jade Blunt</p>
-                        <p>Bennett DenBleyker</p>
-                        <p>Jacob Haight</p>
-                        <p>Hagen Larsen</p>
+                        <h4>Contact Us</h4>
+                        <p>435-HUSTLE1</p>
+                        <p>Office Location:</p>
+                        <p>123 Hustle Lane</p>
+                        <p>Logan, UT 84321</p>
                     </div>
                 </div>
             </div>

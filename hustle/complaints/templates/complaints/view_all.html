@@ -26,7 +26,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in open_complaints %}
-		  {% include "complaints/complaint_card.html" with complaint=complaint %}
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
                   {% endfor %}
                 </div>
               </div>
@@ -42,8 +42,8 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in closed_complaints %}
-		  {% include "complaints/complaint_card.html" with complaint=complaint %}
-		  {% endfor %}
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
+		              {% endfor %}
                 </div>
               </div>
             </div>
@@ -58,7 +58,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in reimbursed_complaints %}
-		  {% include "complaints/complaint_card.html" with complaint=complaint %}
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
                   {% endfor %}
                 </div>
               </div>
