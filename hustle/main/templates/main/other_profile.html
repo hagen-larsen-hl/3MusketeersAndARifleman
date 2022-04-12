@@ -50,7 +50,7 @@
                     </div>
                     <div class="card-body">
                         <p>{{ review.comments }}</p>
-                        <strong>By: {{ review.reviewer.first_name }} {{ reivew.reviewer.last_name }}</strong>
+                        <strong>By: {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}</strong>
                         <p>Date: {{ review.create_date }}</p>
                     </div>
                 </div>
@@ -85,11 +85,13 @@
             </div>
             <div class="m-4">
                 {% if bl %}
-                <a class="btn btn-secondary" href="{% url 'main:blackListUser' view_user.id %}">Undo BlackList {{
-                    view_user.username }}</a>
+                <a class="btn btn-secondary" href="{% url 'main:blackListUser' view_user.id %}">
+                    Undo BlackList {{ view_user.username }}
+                </a>
                 {% else %}
-                <a class="btn btn-dark" href="{% url 'main:blackListUser' view_user.id %}">BlackList {{
-                    view_user.username }}</a>
+                <a class="btn btn-dark" href="{% url 'main:blackListUser' view_user.id %}">
+                    BlackList {{ view_user.username }}
+                </a>
                 {% endif %}
             </div>
         </div>
