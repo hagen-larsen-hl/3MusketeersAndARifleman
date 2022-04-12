@@ -44,7 +44,7 @@
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
                     <p>Zip Code: {{ job.zip_code }}</p>
                 </div>
-                {% if job.claimed_user != null %}
+                {% if job.claimed_user %}
                     <div class="m-2 bg-light p-4 rounded border border-hustle">
                         {% if job.claimed_user %}
                         <div class="m-2">
@@ -110,13 +110,6 @@
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <div class="">
                         <h5>Submit A New Bid</h5>
-			{% if messages %}
-			{% for message in messages %}
-			{% if "BidFormError" in message.tags %}
-			<span>{{ message }}</span>
-			{% endif %}
-			{% endfor %}
-			{% endif %}
 			<form method="POST" action="{% url 'jobs:bid job' job.id %}">
                             {% csrf_token %}
                             <div class="fieldWrapper">

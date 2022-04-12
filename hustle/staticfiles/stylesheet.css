@@ -73,3 +73,34 @@ body {
 .row {
   --bs-gutter-x: 0;
 }
+
+.msg p {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.msg-error {
+  background-color: #f888;
+  border-top: solid 1pt #800;
+  border-bottom: solid 1pt #800;
+}
+.msg-info {
+  background-color: #88f8;
+  border-top: solid 1pt #008;
+  border-bottom: solid 1pt #008;
+}
+.msg-success {
+  background-color: #8f88;
+  border-top: solid 1pt #080;
+  border-bottom: solid 1pt #080;
+}
+.msg-warning {
+  background-color: #ff88;
+  border-top: solid 1pt #880;
+  border-bottom: solid 1pt #880;
+}
+.msg-debug {
+  background-color:#8888;
+  border-top: solid 1pt #000;
+  border-bottom: solid 1pt #000;
+}

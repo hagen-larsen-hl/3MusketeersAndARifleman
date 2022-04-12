@@ -106,6 +106,23 @@
                 </div>
             </div>
         </nav>
+        {% if messages %}
+        {% for message in messages %}
+	<div id="message-{{ forloop.counter }}" class="w-100 h-auto p-1 msg msg-{{ message.level_tag }}">
+            <p style="display:inline-block;width=calc(100% - 2em)">
+            {% if message.message.items %}
+            {% for k,v in message.message.items %}
+	    {{ k|title|cut:"_" }}: {{ v|first }}</br>
+	    {% endfor %}
+	    {% else %}
+	    {{ message }}
+	    {% endif %}
+	    </p>
+	    <a class="btn btn-dark px-0" style="display:inline-block;float:right;width:2em"
+                onclick="document.getElementById('message-{{ forloop.counter }}').style.display = 'none'">X</a>
+        </div>
+        {% endfor %}
+        {% endif %}
     </div>
 
     <div id="content" class="background vh-100">
