@@ -77,8 +77,6 @@ def view_job(request, job_id):
         return redirect("jobs:view")
     form = NewJobBidForm()
     bids = Bid.objects.filter(selected_job_id=job_id)
-
-
     if job.accepted_bid is not None:
         time_left = dateSubtractAndConvert(job.accepted_bid.date_time) - job.type.canceledTime
     else:
@@ -222,11 +220,11 @@ def cancel_job(request, job_id):
     try:
         job = Job.objects.get(pk=job_id)
     except Job.DoesNotExist:
-        return redirect("jobs:view")
+        return redirect("jobs:view job", job_id)
     if request.method == "POST":
         job.cancelled = True
         job.save()
-        return redirect("jobs:view")
+        return redirect("jobs:view job", job_id)
 
 
 def dateSubtractAndConvert(bidTime):

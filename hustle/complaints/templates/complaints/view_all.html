@@ -30,7 +30,9 @@
                     <div class="card m-1">
                       <div class="card-header">
                           <h5 class="mt-2" style="float: left">Complaint #{{ complaint.id }}</h5>
-                          <a class="btn btn-secondary" style="float: right;" href="{{ url }}/complaints/view/{{ complaint.id }}">Review</a>
+                          {% if user.is_superuser %}
+                            <a class="btn btn-secondary" style="float: right;" href="{{ url }}/complaints/view/{{ complaint.id }}">Review</a>
+                          {% endif %}
                       </div>
                       <div class="card-body">
                         <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
