@@ -35,14 +35,6 @@
 	    </center>
 	    {% endif %}
             <div>
-                {% if job.claimed_user != null %}
-                <div class="m-2">
-                    <p>Accepted User: {% include 'main/user_link.html' with user=job.claimed_user %}</p>
-                    <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
-                    <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
-                </div>
-                {% endif %}
-
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <h3 class="pb-4">Job Details</h3>
                     <p>Type: {{ job.type }}</p>
@@ -51,6 +43,15 @@
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
                     <p>Zip Code: {{ job.zip_code }}</p>
                 </div>
+                {% if job.claimed_user != null %}
+                    <div class="m-2 bg-light p-4 rounded border border-hustle">
+                        <div class="m-2">
+                            <p>Accepted User: {% include 'main/user_link.html' with user=job.claimed_user %}</p>
+                            <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                            <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
 
                 {% if job.accepted_bid.user == user and not job.complete %}
                 <div class="m-2">
@@ -137,7 +138,6 @@
                     <div class="w-100 btn text-light bg-secondary">Cancel Job</div>
                 </div>
                 {% endif %}
-
             </div>
             {% endif %}
         </div>
