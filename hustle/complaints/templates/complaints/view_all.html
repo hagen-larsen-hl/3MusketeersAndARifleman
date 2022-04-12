@@ -26,21 +26,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in open_complaints %}
-                  <div class="col">
-                    <div class="card m-1">
-                      <div class="card-header">
-                          <h5 class="mt-2" style="float: left">Complaint #{{ complaint.id }}</h5>
-                          {% if user.is_superuser %}
-                            <a class="btn btn-secondary" style="float: right;" href="{{ url }}/complaints/view/{{ complaint.id }}">Review</a>
-                          {% endif %}
-                      </div>
-                      <div class="card-body">
-                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
-                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
-                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
-                      </div>
-                    </div>
-                  </div>
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
                   {% endfor %}
                 </div>
               </div>
@@ -56,20 +42,8 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in closed_complaints %}
-                  <div class="col">
-                    <div class="card m-1">
-                      <div class="card-header">
-                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
-                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
-                      </div>
-                      <div class="card-body">
-                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
-                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
-                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  {% endfor %}
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
+		              {% endfor %}
                 </div>
               </div>
             </div>
@@ -84,19 +58,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for complaint in reimbursed_complaints %}
-                  <div class="col">
-                    <div class="card m-1">
-                      <div class="card-header">
-                          <h5 class="my-2" style="float: left">Complaint #{{ complaint.id }}</h5>
-                          <h5><span class="badge rounded-pill bg-success my-2" style="float: right">{{ complaint.get_state_display }}</span></h5>
-                      </div>
-                      <div class="card-body">
-                        <p id="created_date{{ complain.id }}"><strong>Created:</strong> {{ complaint.create_date }}</p>
-                        <p id="reason{{ complain.id }}"><strong>Reason:</strong> {{ complaint.get_reason_display }}</p>
-                        <p id="description{{ complain.id }}"><strong>Description:</strong> {{ complaint.description }}</p>
-                      </div>
-                    </div>
-                  </div>
+		              {% include "complaints/complaint_card.html" with complaint=complaint %}
                   {% endfor %}
                 </div>
               </div>

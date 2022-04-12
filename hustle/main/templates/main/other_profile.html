@@ -18,16 +18,16 @@
     <div class="col-6">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
-                <h1 class="my-2" style="float: left">{{ user.username }}</h1>
+                <h1 class="my-2" style="float: left">{{ view_user.username }}</h1>
                 {% if bl %}
                 <h5><span class="badge rounded-pill bg-dark my-4" style="float: right">Blacklisted</span></h5>
                 {% endif %}
             </div>
             <div class="card-body justify-content-center">
                 <h3>
-                    <p>First Name: {{ user.first_name }}</p>
-                    <p>Last Name: {{ user.last_name }}</p>
-                    <p>Email: {{ user.email }}</p>
+                    <p>First Name: {{ view_user.first_name }}</p>
+                    <p>Last Name: {{ view_user.last_name }}</p>
+                    <p>Email: {{ view_user.email }}</p>
                 </h3>
             </div>
         </div>
@@ -41,9 +41,9 @@
             </div>
             <div class="m-4">
                 {% if bl %}
-                <a class="btn btn-secondary" href="{% url 'main:blackListUser' user.id %}">Undo BlackList {{ user.username }}</a>
+                <a class="btn btn-secondary" href="{% url 'main:blackListUser' view_user.id %}">Undo BlackList {{ view_user.username }}</a>
                 {% else %}
-                <a class="btn btn-dark" href="{% url 'main:blackListUser' user.id %}">BlackList {{ user.username }}</a>
+                <a class="btn btn-dark" href="{% url 'main:blackListUser' view_user.id %}">BlackList {{ view_user.username }}</a>
                 {% endif %}
             </div>
         </div>

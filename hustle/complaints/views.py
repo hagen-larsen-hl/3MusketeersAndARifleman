@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from main.models import UserData
 from .forms import ComplaintForm
 from .models import Complaint
+from jobs.models import Job
 from django.contrib import messages
 from datetime import datetime
 from main.auth import user_is_authenticated, user_in_group, is_in_group
@@ -11,9 +12,9 @@ from main.auth import user_is_authenticated, user_in_group, is_in_group
 
 @user_is_authenticated()
 @user_in_group("Customer")
-def create(request):
+def create(request, job_id=None):
     if request.method == "POST":
-        form = ComplaintForm(request.POST, request.FILES)
+        form = ComplaintForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             complaint = form.save()
             complaint.create_date = datetime.today()
@@ -21,8 +22,13 @@ def create(request):
             complaint.save()
             messages.success(request, "Complaint submitted successfully." )
             return redirect("complaints:view")
-        messages.error(request, "There was invalid information in your complaint form. Please review and try again.")
-    form = ComplaintForm()
+    else:
+        form = ComplaintForm(user=request.user)
+    if job_id is None:
+        form.fields['job'].queryset = Job.objects.filter(customer=request.user, complete=True)
+    else:
+        get_object_or_404(Job, customer=request.user, id=job_id)
+        form.fields['job'].queryset = Job.objects.filter(customer=request.user, id=job_id)
     return render(request=request, template_name="complaints/create.html", context={"complaint_form":form})
 
 
@@ -38,11 +44,12 @@ def view(request):
 
 
 @user_is_authenticated()
-@user_in_group("Owner")
+@user_in_group("Customer", "Owner")
 def viewOne(request, complaint_id):
     complaint = get_object_or_404(Complaint, pk=complaint_id)
-    if complaint.image:
+    if complaint.image and complaint.image.url.startswith("/complaints/static/complaints/"):
         complaint_url = complaint.image.url[11:]
+        print(complaint.image.url)
     else:
         complaint_url = None
     if complaint.reason == "no_show":
@@ -78,8 +85,7 @@ def reimburse(request, complaint_id):
         complaint.save()
     else:
         messages.error(request, "This complaint is not eligible for reimbursement.")
-
-    return render(request, "complaints/view_one.html", {"complaint": complaint})
+    return redirect("complaints:viewOne", complaint_id=complaint_id)
 
 
 @user_is_authenticated()
@@ -91,7 +97,7 @@ def close(request, complaint_id):
         complaint.save()
     else:
         messages.error(request, "This complaint cannot be closed.")
-    return redirect("complaints:viewOne", complaint_id=complaint.id)
+    return redirect("complaints:viewOne", complaint_id=complaint_id)
 
 
 @user_is_authenticated()
