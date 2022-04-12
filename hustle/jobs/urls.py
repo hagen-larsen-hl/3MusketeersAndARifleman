@@ -10,6 +10,7 @@ urlpatterns = [
     path("view/<int:job_id>", views.view_job, name="view job"),
     path("view/<int:job_id>/bid", views.bid_on_job, name="bid job"),
     path("accept_bid/<int:job_id>/<int:bid_id>", views.accept_bid, name="accept bid"),
+    path("rescind_bid/<int:job_id>/<int:bid_id>", views.rescind_bid, name="rescind bid"),
     path("cancel_job/<int:job_id>", views.cancel_job, name="cancel job"),
     path("view/", views.view_all_jobs, name="view"),
     path("view/mine/", views.view, name="view mine"),

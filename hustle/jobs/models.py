@@ -41,10 +41,12 @@ class Job(models.Model):
 class Bid(models.Model):
     bid = models.DecimalField(max_digits=100, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE)
+    selected_job = models.ForeignKey(Job, related_name="selected_job", on_delete=models.CASCADE, null=True)
     date_time = models.DateTimeField(default=datetime.now, blank=True)
 
     def get_state(self):
+        if not self.selected_job:
+            return ("Rescinded", "dark")
         if self.selected_job.cancelled:
             return ("Cancelled", "danger")
         if hasattr(self, "accepted_bid") and self.accepted_bid.exists():

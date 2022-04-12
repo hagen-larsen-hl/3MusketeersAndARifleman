@@ -27,7 +27,7 @@ class NewJobForm(forms.ModelForm):
         cleaned_data = super().clean()
         start_value = cleaned_data.get('completion_window_start')
         end_value = cleaned_data.get('completion_window_end')
-        if end_value < start_value:
+        if end_value and start_value and end_value < start_value:
             self.add_error('completion_window_end', ValidationError("End date must be after the start date"))
 
 
@@ -45,7 +45,8 @@ class SplitDateTimeWidget(forms.MultiWidget):
         return [None, None]
 
     def value_from_datadict(self, data, files, name):
-        date, time = super().values_from_datadict(data, files, name)
+        date = data.get(name + "_date")
+        time = data.get(name + "_time")
         return "{} {}".format(date, time)
 
 class NewJobBidForm(forms.ModelForm):
@@ -54,4 +55,12 @@ class NewJobBidForm(forms.ModelForm):
     class Meta:
         model = Bid
         fields = ["bid", "date_time"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("date_time") <= datetime.datetime.now(datetime.timezone.utc):
+            self.add_error("date_time", ValidationError("Scheduled completion time cannot be in the past!"))
+        if cleaned_data.get("bid") < 0:
+            self.add_error("bid", ValidationError("Bid amount must be a positive value"))
+        return cleaned_data
 

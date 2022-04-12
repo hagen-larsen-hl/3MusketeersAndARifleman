@@ -55,8 +55,7 @@
 
                 {% if job.accepted_bid.user == user and not job.complete %}
                 <div class="m-2">
-                    <a class="btn btn-hustle-secondary m-1" onclick="return confirm('Are you sure?')" href="{% url 'jobs:complete job' job.id %}">Mark
-                        Complete</a>
+                    <a class="btn btn-hustle-secondary m-1" onclick="return confirm('Are you sure?')" href="{% url 'jobs:complete job' job.id %}">Mark Complete</a>
                 </div>
                 {% elif job.complete %}
 		<center><h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5></center>
@@ -94,7 +93,7 @@
 				    ></input>
                                 </form>
 				{% elif bid.user == user %}
-				<form method="post" action="{{ url }}/jobs/rescind_bid/{{ job.id }}/{{ bid.id }}">
+				<form method="post" action="{% url 'jobs:rescind bid' job.id bid.id %}">
 				    {% csrf_token %}
 				    <input class="btn btn-hustle" type="submit" value="Rescind"></input>
 				</form>
@@ -108,6 +107,13 @@
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <div class="">
                         <h5>Submit A New Bid</h5>
+			{% if messages %}
+			{% for message in messages %}
+			{% if "BidFormError" in message.tags %}
+			<span>{{ message }}</span>
+			{% endif %}
+			{% endfor %}
+			{% endif %}
 			<form method="POST" action="{% url 'jobs:bid job' job.id %}">
                             {% csrf_token %}
                             <div class="fieldWrapper">
@@ -139,7 +145,7 @@
 		    {% if job.complete or time_left <= -24 %}
 		    <a class="btn btn-hustle w-100" href="{% url 'complaints:create_for' job.id %}">File A Complaint</a>
 		    {% else %}
-		    <a class="btn text-light bg-secondary w-100" popover="focus hover" title="Cannot File Complaint" data-bs-content="Job must be completed, or 24 hours after scheduled completion time" data-bs-placement="left">File a Complaint ({{ time_left|add:"24" }})</a>
+		    <a class="btn text-light bg-secondary w-100" popover="focus hover" title="Cannot File Complaint" data-bs-content="Job must be completed, or 24 hours after scheduled completion time. ({{ time_left|add:"24" }} more hours)" data-bs-placement="left">File a Complaint</a>
 		    {% endif %}
                 </div>
 
@@ -152,7 +158,7 @@
                 </div>
                 {% else %}
                 <div class="col-6">
-                    <a class="w-100 btn text-light bg-secondary" popover="focus hover" title="Cannot Cancel" data-bs-content="You are too close to the completion time to cancel this job">Cancel Job</a>
+                    <a class="w-100 btn text-light bg-secondary" popover="focus hover" title="Cannot Cancel" data-bs-content="You must cancel the accepted bid in order to cancel the job.">Cancel Job</a>
                 </div>
                 {% endif %}
 

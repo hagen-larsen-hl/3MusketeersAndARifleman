@@ -1,5 +1,5 @@
 import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import NewJobForm, NewJobBidForm
 from django.contrib import messages
 from main.auth import user_passes_test, user_is_authenticated, user_in_group
@@ -51,11 +51,12 @@ def view_bids(request):
     bid_from_user = Q(user=request.user)
     bid_accepted = Q(accepted_bid__isnull=False, selected_job__cancelled=False)
     bid_rejected = Q(accepted_bid__isnull=True, selected_job__accepted_bid__isnull=False)
+    bid_rescinded = Q(selected_job__isnull=True)
     bid_completed = Q(selected_job__complete=True)
     bid_cancelled = Q(selected_job__cancelled=True)
-    accepted_state = bid_accepted   & ~bid_completed  & ~bid_cancelled
-    rejected_state = bid_cancelled  |  bid_rejected
-    complete_state = bid_accepted   &  bid_completed
+    accepted_state = bid_accepted   & ~bid_completed  & ~bid_cancelled  & ~bid_rescinded
+    rejected_state = bid_cancelled  |  bid_rejected   | bid_rescinded
+    complete_state = bid_accepted   &  bid_completed  & ~bid_rescinded
     active_state = ~accepted_state & ~rejected_state & ~complete_state
 
     complete_bids = Bid.objects.filter(user=request.user, accepted_bid__isnull=False, selected_job__complete=True, selected_job__cancelled=False)
@@ -128,6 +129,19 @@ def bid_on_job(request, job_id):
         if form.is_valid():
             bid.save()
             return redirect("jobs:view job", job_id)
+        else:
+            messages.error(request, errors, extra_tags="BidFormError")
+    return redirect("jobs:view job", job_id)
+
+
+@user_is_authenticated()
+@user_in_group("Worker")
+def rescind_bid(request, job_id, bid_id):
+    job = get_object_or_404(Job, pk=job_id)
+    bid = get_object_or_404(Bid, pk=bid_id)
+    if not (job.complete or job.cancelled or (job.accepted_bid and job.accepted_bid.exists())):
+        bid.selected_job = None
+        bid.save()
     return redirect("jobs:view job", job_id)
 
 
@@ -256,7 +270,7 @@ def cancel_job(request, job_id):
 
 def dateSubtractAndConvert(bidTime):
 
-    bt = ((bidTime - datetime.datetime.now(datetime.timezone.utc)  - datetime.timedelta(hours=6)))
+    bt = bidTime - datetime.datetime.now(datetime.timezone.utc)
 
     return int((bt.days * 24) + (bt.seconds / 3600))
 
