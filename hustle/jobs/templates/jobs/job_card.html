@@ -14,8 +14,9 @@
 	{% if job.accepted_bid %}<p id="bid{{ job.id }}"><strong>Accepted Bid:</strong> {{ job.accepted_bid.bid }}</p>{% endif %}
       </div>
       <div class="card-footer">
+        <a class="btn btn-hustle" id="survey" href="{{ url }}/surveys/create/{{ job.id }}">Complete Survey</a>
         {% if job.customer == user and job.complete %}
-	<a class="btn btn-{{ job.get_state.1 }}" id="review" href="{{ url }}/reviews/create">Leave Review</a>
+	      <a class="btn btn-hustle" id="review" href="{{ url }}/reviews/create">Review Worker</a>
         {% else %}
 	<p id="state{{ job.id }}" class="text-{{ job.get_state.1 }}"><strong>State:</strong> {{ job.get_state.0 }}</p>
 	{% endif %}

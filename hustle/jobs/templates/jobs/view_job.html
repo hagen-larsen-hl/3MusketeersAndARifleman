@@ -121,19 +121,22 @@
             </div>
             {% if job.customer == user and not job.cancelled %}
             <div class="m-2 bg-light p-4 rounded border border-hustle row">
-                <div class="col-6">
+                <div class="col-4">
                     <a class="btn btn-hustle w-100" href="{% url 'complaints:create' %}">File A Complaint</a>
+                </div>
+                <div class="col-4">
+                    <a class="btn btn-hustle w-100" href="{% url 'reviews:create' %}">Review Worker</a>
                 </div>
 
                 {% if not job.accepted_bid %}
-                <div class="col-6">
+                <div class="col-4">
                     <form class="w-100" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
                         {% csrf_token %}
                         <input class="w-100 btn btn-danger" type="submit" value="Cancel Job"></input>
                     </form>
                 </div>
                 {% else %}
-                <div class="col-6">
+                <div class="col-4">
                     <div class="w-100 btn text-light bg-secondary">Cancel Job</div>
                 </div>
                 {% endif %}

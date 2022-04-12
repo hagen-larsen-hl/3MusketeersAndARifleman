@@ -13,6 +13,9 @@
             <div class="card-header bg-brown text-white">
                 <h2>Recent Activity</h2>
             </div>
+            {% for survey in surveys %}
+		        <div><p>Survey: {{ survey.id }}</p></div>
+                  {% endfor %}
         </div>
     </div>
     <div class="col-6">

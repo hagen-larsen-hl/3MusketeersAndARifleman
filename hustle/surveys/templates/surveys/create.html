@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<!--Complete a Survey-->
+<div class="d-flex justify-content-center container-sm">
+    <div class="card m-5 w-50" >
+        <div class="card-header bg-success text-white">
+            Complete Survey : Job #{{ job.id }}
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in survey_form %}
+                <div class="fieldWrapper">
+                    {{ field|as_crispy_field }}
+                </div>
+                {% endfor %}
+                <div class="justify-content-center">
+                    <button class="btn btn-hustle" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

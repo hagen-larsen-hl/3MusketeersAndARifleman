@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+from surveys.models import Survey
 from .models import User, UserData, BlackList
 from .forms import NewUserForm, MoneyForm, EditUser, EditUserData, EditCustomerData, EditWorkerData
 from django.contrib.auth import login, authenticate, logout
@@ -89,8 +91,9 @@ def other_profile(request, user_id):
         l = BlackList.objects.filter(user=request.user, blacklisted_user=current_user)
 
         alreadyBlackListed = len(l) >= 1
+        surveys = Survey.objects.filter(customer=current_user)
 
-        return render(request, 'main/other_profile.html', {"user": current_user, "bl": alreadyBlackListed})
+        return render(request, 'main/other_profile.html', {"user": current_user, "bl": alreadyBlackListed, "surveys": surveys})
     else:
         return redirect("main:login")
 
