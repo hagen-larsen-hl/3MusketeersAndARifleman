@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 from django.shortcuts import render, redirect
 
 from surveys.models import Survey
-=======
 from django.shortcuts import render, redirect, get_object_or_404
->>>>>>> 86efed0bb9d14485db0fbf962041db008e0b698e
 from .models import User, UserData, BlackList
 from .forms import NewUserForm, MoneyForm, EditUser, EditUserData, EditCustomerData, EditWorkerData
 from django.contrib.auth import login, authenticate, logout
