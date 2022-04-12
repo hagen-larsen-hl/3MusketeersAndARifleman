@@ -65,6 +65,11 @@ body {
 .link-hustle {
   color: #3f8dc4
 }
+
+.link-hustle.blacklisted {
+  color: #400
+}
+
 .row {
   --bs-gutter-x: 0;
 }
