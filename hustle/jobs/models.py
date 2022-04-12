@@ -13,7 +13,7 @@ class JobType(models.Model):
 
 
 class Job(models.Model):
-    time_estimate = models.IntegerField(name="time_estimate")
+    time_estimate = models.IntegerField("Time estimate (in hours)", name="time_estimate")
     zip_code = models.CharField(name="zip_code", max_length=10)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     accepted_bid = models.ForeignKey("Bid", related_name="accepted_bid", on_delete=models.CASCADE, null=True)
