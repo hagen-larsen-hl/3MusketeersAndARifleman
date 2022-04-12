@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect
 
 from surveys.models import Survey
+=======
+from django.shortcuts import render, redirect, get_object_or_404
+>>>>>>> 86efed0bb9d14485db0fbf962041db008e0b698e
 from .models import User, UserData, BlackList
 from .forms import NewUserForm, MoneyForm, EditUser, EditUserData, EditCustomerData, EditWorkerData
 from django.contrib.auth import login, authenticate, logout
@@ -82,20 +86,16 @@ def profile(request):
 
 @user_is_authenticated()
 def other_profile(request, user_id):
-    if request.user.is_authenticated:
-        if user_id == request.user.id:
-            return redirect("main:profile")
+    if user_id == request.user.id:
+        return redirect("main:profile")
 
-        current_user = User.objects.get(pk=user_id)
+    current_user = User.objects.get(pk=user_id)
 
-        l = BlackList.objects.filter(user=request.user, blacklisted_user=current_user)
+    l = BlackList.objects.filter(user=request.user, blacklisted_user=current_user)
+    alreadyBlackListed = l.exists()
+    surveys = Survey.objects.filter(customer=current_user)
 
-        alreadyBlackListed = len(l) >= 1
-        surveys = Survey.objects.filter(customer=current_user)
-
-        return render(request, 'main/other_profile.html', {"user": current_user, "bl": alreadyBlackListed, "surveys": surveys})
-    else:
-        return redirect("main:login")
+    return render(request, 'main/other_profile.html', {"view_user": current_user, "bl": alreadyBlackListed, "surveys": surveys})
 
 
 @user_is_authenticated()
@@ -161,16 +161,21 @@ def edit_user(request):
 
 @user_is_authenticated()
 def blacklist_user(request, other_user_id):
-    blackList = BlackList()
-    blackList.user = request.user
-    other_user = User.objects.get(pk=other_user_id)
-    blackList.blacklisted_user = other_user
+    other_user = get_object_or_404(User, id=other_user_id)
+    if other_user == request.user:
+        return redirect("main:profile")
 
     l = BlackList.objects.filter(user=request.user, blacklisted_user=other_user)
 
-    if len(l) < 1:
+    print(request.user, "blocking", other_user)
+
+    if not l.exists():
+        blackList = BlackList()
+        blackList.user = request.user
+        blackList.blacklisted_user = other_user
         blackList.save()
     else:
         l.delete()
 
-    return redirect(f'/main/profile/{other_user_id}/')
+    return redirect("main:otherProfile", other_user_id)
+

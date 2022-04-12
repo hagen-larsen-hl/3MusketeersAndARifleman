@@ -7,6 +7,7 @@ app_name = "complaints"
 urlpatterns = [
     # path("", views.profile, name="profile"),
     path("create/", views.create, name="create"),
+    path("create/<int:job_id>", views.create, name="create_for"),
     path("view/", views.view, name="view"),
     path("view/<int:complaint_id>", views.viewOne, name="viewOne"),
     path("view/all/", views.viewAll, name="viewAll"),

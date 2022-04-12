@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'complaints',
-    'main',
     'jobs',
     'reviews',
     'surveys',
@@ -45,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'localflavor',
+    'main',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -73,6 +73,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'blacklist': 'main.templatetags.blacklist',
+            },
         },
     },
 ]

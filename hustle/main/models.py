@@ -26,8 +26,8 @@ class WorkerData(models.Model):
             return 0
 
 class BlackList(models.Model):
-    user = models.ForeignKey(User, related_name="user_blackList",  on_delete=models.CASCADE, default=1)
-    blacklisted_user = models.ForeignKey(User, related_name="blackListed_user", on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, related_name="blacklist",  on_delete=models.CASCADE, default=1)
+    blacklisted_user = models.ForeignKey(User, related_name="blacklisted_by", on_delete=models.CASCADE, default=1)
 
     class Meta:
         unique_together = ["user","blacklisted_user"]
