@@ -32,4 +32,4 @@ class Complaint(models.Model):
         elif self.state == "closed":
             return ("Closed", "danger")
         elif self.state == "reimbursed":
-            return ("Reimbursed", "success")
+            return ("Reimbursed", "hustle")

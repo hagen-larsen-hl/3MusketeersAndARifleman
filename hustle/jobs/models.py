@@ -13,7 +13,7 @@ class JobType(models.Model):
 
 
 class Job(models.Model):
-    time_estimate = models.IntegerField("Time estimate (in hours)", name="time_estimate")
+    time_estimate = models.DecimalField("Time estimate (in hours)", name="time_estimate", decimal_places=2, max_digits=4)
     zip_code = models.CharField(name="zip_code", max_length=10)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     accepted_bid = models.ForeignKey("Bid", related_name="accepted_bid", on_delete=models.CASCADE, null=True)
@@ -28,7 +28,7 @@ class Job(models.Model):
         if self.cancelled:
             return ("Cancelled", "danger")
         elif self.complete:
-            return ("Completed", "success")
+            return ("Completed", "hustle")
         elif self.accepted_bid is not None:
             return ("Accepted Bid", "secondary")
         else:
