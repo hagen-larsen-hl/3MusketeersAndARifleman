@@ -5,57 +5,107 @@
 {% load crispy_forms_tags %}
 
 <div class="row my-4">
+    {% if user.customer_data %}
     <div class="order-2 order-lg-0 col-12 col-sm-6 col-md-12 col-lg-3 mb-4">
-        <div class="card text-center mx-2">
-        <div class="card-header bg-brown text-white">
-            <h2>Recent Activity</h2>
-        </div>
+        <div class="card mx-2">
+            <div class="card-header bg-brown text-white">
+                <h2 class="text-center">Surveys of My Jobs</h2>
+            </div>
+            <div class="card-body scroll">
+                <p><strong>Note: </strong>For the ratings in these surveys, workers were asked to use the following
+                    scale:</p>
+                <ul>
+                    <li>1 - Much shorter/easier than customer predicted</li>
+                    <li>5 - As long/difficult as customer predicted</li>
+                    <li>10 - Much longer/harder than customer predicted</li>
+                </ul>
+                {% for survey in surveys %}
+                <div class="card mx-2 mb-2">
+                    <div class="card-header text-center">
+                        <h2 class="text-center">Job #{{ survey.job.id }}</h2>
+                        <strong>Type: {{ survey.job.type }}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Duration Rating: </strong>{{ survey.duration_rating }}</p>
+                        <p><strong>Duration Notes: </strong>{{ survey.duration_notes }}</p>
+                        <p><strong>Difficulty Rating: </strong>{{ survey.complexity_rating }}</p>
+                        <p><strong>Difficulty Notes: </strong>{{ survey.complexity_notes }}</p>
+                        <p><strong>Other Notes: </strong>{{ survey.notes }}</p>
+                        <div><strong>Completed By: {% include 'main/user_link.html' with person=survey.job.claimed_user %}</strong></div>
+                        <p>{{ survey.create_date }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
+    {% elif user.worker_data %}
+    <div class="order-2 order-lg-0 col-12 col-sm-6 col-md-12 col-lg-3 mb-4">
+        <div class="card text-center mx-2">
+            <div class="card-header bg-brown text-white mb-4">
+                <h2>Reviews of Me</h2>
+            </div>
+            <div class="card-body scroll">
+                {% for review in reviews %}
+                <div class="card mx-2 mb-2">
+                    <div class="card-header text-center">
+                        <h2 class="text-center">Rating: {{ review.rating }}/5 </h2>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ review.comments }}</p>
+                        <div><strong>Submitted By: {% include 'main/user_link.html' with person=review.reviewer %}</strong></div>
+                        <p>Date: {{ review.create_date }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="col-12 col-md-8 col-lg-6 mb-4">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
                 <h1 class="d-inline-block">Welcome, {{ user.first_name }}!</h1>
-	        <span style="float: right" class="badge bg-primary">
+                <span style="float: right" class="badge bg-primary">
                     {% if user.customer_data %}
-		    Customer
-		    {% elif user.worker_data %}
-		    Worker
-		    {% elif user.is_superuser %}
-		    Owner / Superuser
-		    {% endif %}
-	        </span>
+                    Customer
+                    {% elif user.worker_data %}
+                    Worker
+                    {% elif user.is_superuser %}
+                    Owner / Superuser
+                    {% endif %}
+                </span>
             </div>
             <div class="card-body justify-content-center">
                 {% if edit %}
-                    <form method="POST" class="m-2">
-                        {% csrf_token %}
-		        {% for edit_form in edit_forms %}
-		    	    {% if edit_form.as_card %}
-			    <div id="{{ edit_form.as_card }}" class="card" style="margin-top: 1em">
-			    <div class="card-header">{{ edit_form.card_header }}</div>
-			    <div class="card-body">
-			    {% endif %}
+                <form method="POST" class="m-2">
+                    {% csrf_token %}
+                    {% for edit_form in edit_forms %}
+                    {% if edit_form.as_card %}
+                    <div id="{{ edit_form.as_card }}" class="card" style="margin-top: 1em">
+                        <div class="card-header">{{ edit_form.card_header }}</div>
+                        <div class="card-body">
+                            {% endif %}
                             {% for field in edit_form %}
-                                <div class="fieldWrapper mb-2">
-                                  {{ field|as_crispy_field }}
-                                </div>
+                            <div class="fieldWrapper mb-2">
+                                {{ field|as_crispy_field }}
+                            </div>
                             {% endfor %}
-			    {% if edit_form.as_card %}
-			    </div>
-			    </div>
-			    {% endif %}
-		        {% endfor %}
-                        <button class="btn m-2 btn-hustle btn-lg" type="submit">Save</button>
-                        <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
-                    </form>
+                            {% if edit_form.as_card %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <button class="btn m-2 btn-hustle btn-lg" type="submit">Save</button>
+                    <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main">Cancel</a>
+                </form>
                 {% else %}
-                   <h3>
-		       {% for profile_field in profile_fields %}
-		       <p>{{ profile_field.0 }}: {{ profile_field.1 }}</p>
-		       {% endfor %}
-                   </h3>
-                    <a class="btn m-2 btn-hustle btn-lg" href="/main/edit">Edit</a>
+                <h3>
+                    {% for profile_field in profile_fields %}
+                    <p>{{ profile_field.0 }}: {{ profile_field.1 }}</p>
+                    {% endfor %}
+                </h3>
+                <a class="btn m-2 btn-hustle btn-lg" href="/main/edit">Edit</a>
                 {% endif %}
             </div>
         </div>
@@ -141,19 +191,19 @@
         let area_code = document.querySelector("input[name='phone_number_area_code']");
         let prefix = document.querySelector("input[name='phone_number_prefix']");
         let line_number = document.querySelector("input[name='phone_number_line_number']");
-        area_code.oninput = (e) => {carry_over(e, 3, null, prefix);};
-        prefix.oninput = (e) => {carry_over(e, 3, area_code, line_number);};
-        line_number.oninput = (e) => {carry_over(e, 4, prefix, null);};
+        area_code.oninput = (e) => { carry_over(e, 3, null, prefix); };
+        prefix.oninput = (e) => { carry_over(e, 3, area_code, line_number); };
+        line_number.oninput = (e) => { carry_over(e, 4, prefix, null); };
     }
-    document.querySelectorAll("#id_state option:first-child").forEach(el => {el.disabled = true;});
+    document.querySelectorAll("#id_state option:first-child").forEach(el => { el.disabled = true; });
 
 </script>
 <style>
     input[name^='phone_number_'] {
         width: 5em;
-	display: inline;
-	background-image: none !important;
-	padding-right: inherit !important;
+        display: inline;
+        background-image: none !important;
+        padding-right: inherit !important;
     }
 </style>
 {% endblock %}
