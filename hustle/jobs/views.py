@@ -45,10 +45,10 @@ def view(request):
         is_all = False
     
     return render(request=request, template_name="jobs/view_all.html", context={"type": "Jobs", "item_groups": [
-            ("active", active & user),
-            ("completed", completed & user ),
-            ("cancelled", cancelled & user),
-        ], "all"=is_all})
+            ("active", Job.objects.filter(active & user)),
+            ("completed", Job.objects.filter(completed & user)),
+            ("cancelled", Job.objects.filter(cancelled & user)),
+        ], "all": is_all})
 
 @user_is_authenticated()
 @user_in_group("Worker")
@@ -97,11 +97,8 @@ def update_job_request(request, job_id):
 
 @user_is_authenticated()
 def view_job(request, job_id):
-    try:
-        job = Job.objects.get(pk=job_id)
-    except Job.DoesNotExist:
-        return redirect("jobs:view")
-    form = NewJobBidForm()
+    job = get_object_or_404(Job, pk=job_id)
+    form = NewJobBidForm(job=job)
     bids = Bid.objects.filter(selected_job_id=job_id)
     if job.accepted_bid is not None:
         time_left = dateSubtractAndConvert(job.accepted_bid.date_time) - job.type.canceledTime
@@ -114,12 +111,9 @@ def view_job(request, job_id):
 @user_is_authenticated()
 @user_in_group("Worker")
 def bid_on_job(request, job_id):
-    try:
-        job = Job.objects.get(pk=job_id)
-    except Job.DoesNotExist:
-        return redirect("jobs:view")
+    job = get_object_or_404(Job, pk=job_id)
     if request.method == "POST":
-        form = NewJobBidForm(request.POST)
+        form = NewJobBidForm(request.POST, job=job)
         bid = form.instance
         bid.user = request.user
         bid.selected_job = job
@@ -128,7 +122,11 @@ def bid_on_job(request, job_id):
             bid.save()
             return redirect("jobs:view job", job_id)
         else:
-            messages.error(request, errors, extra_tags="BidFormError")
+            errors_l = []
+            for k,vl in errors.items():
+                for v in vl:
+                    errors_l.append(f"{k.replace('_', ' ')}: {v}")
+            messages.error(request, "</br>".join(errors_l))
     return redirect("jobs:view job", job_id)
 
 
@@ -155,9 +153,9 @@ def complete_job(request,job_id):
     workerCut = job.accepted_bid.bid - ownerCut
     job.accepted_bid.user.data.money += workerCut
 
-    #this dosen't work for some reason
-    #User.objects.filter(groups__name="Owner").first().data.money += ownerCut
-    #User.objects.filter(groups__name="Owner").first().data.save()
+    ownerData = User.objects.filter(is_superuser=True).first().data
+    ownerData.money += ownerCut
+    ownerData.save()
 
     job.customer.data.save()
     job.accepted_bid.user.data.save()
