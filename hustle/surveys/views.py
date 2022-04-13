@@ -7,31 +7,26 @@ from .models import Survey
 from django.contrib import messages
 from datetime import datetime
 
+from main.auth import user_is_authenticated
 
+@user_is_authenticated
 def create(request, job_id):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            form = SurveyForm(request.POST)
-            if form.is_valid():
-                survey = form.save()
-                survey.create_date = datetime.today()
-                survey.job = Job.objects.get(pk=job_id)
-                print(Job.objects.get(pk=job_id))
-                survey.customer = Job.objects.get(pk=job_id).customer
-                survey.save()
-                messages.success(request, "Survey completed successfully." )
-                return redirect("jobs:view")
-            messages.error(request, "There was invalid information in your survey. Please review and try again.")
+    job = get_object_or_404(Job, pk=job_id)
+    if request.method == "POST":
+        form = SurveyForm(request.POST)
+        if form.is_valid():
+            survey = form.save()
+            survey.create_date = datetime.today()
+            survey.job = job
+            survey.customer = job.customer
+            survey.save()
+            return redirect("jobs:view")
+    else:
         form = SurveyForm()
-        job = get_object_or_404(Job, pk=job_id)
-        return render(request=request, template_name="surveys/create.html", context={"survey_form":form, "job": job})
-    else:
-        return redirect("main:login")
+    return render(request=request, template_name="surveys/create.html", context={"survey_form":form, "job": job})
 
 
+@user_is_authenticated
 def viewOne(request, review_id):
-    if request.user.is_authenticated:
-        survey = get_object_or_404(Survey, pk=review_id)
-        return render(request, 'surveys/view_one.html', {'survey': survey})
-    else:
-        return redirect("main:login")
+    survey = get_object_or_404(Survey, pk=review_id)
+    return render(request, 'surveys/view_one.html', {'survey': survey})
