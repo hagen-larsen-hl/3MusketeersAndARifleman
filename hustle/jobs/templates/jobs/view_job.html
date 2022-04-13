@@ -62,6 +62,9 @@
                 </div>
                 {% elif job.complete %}
 		<center><h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5></center>
+                {% if job.accepted_bid.user == user %}
+                <center><a class="btn btn-hustle" id="survey" href="{{ url }}/surveys/create/{{ job.id }}">Complete Survey</a></center>
+                {% endif %}
                 {% endif %}
             </div>
             <div>
@@ -144,23 +147,28 @@
             </div>
             {% if job.customer == user and not job.cancelled %}
             <div class="m-2 bg-light p-4 rounded border border-hustle row">
-                <div class="col-6">
+                <div class="col-4">
 		    {% if job.complete or time_left <= -24 %}
-		    <a class="btn btn-hustle w-100" href="{% url 'complaints:create_for' job.id %}">File A Complaint</a>
+		    <a class="btn btn-outline-hustle w-100" href="{% url 'complaints:create_for' job.id %}">File A Complaint</a>
 		    {% else %}
 		    <a class="btn text-light bg-secondary w-100" popover="focus hover" title="Cannot File Complaint" data-bs-content="Job must be completed, or 24 hours after scheduled completion time. ({{ time_left|add:"24" }} more hours)" data-bs-placement="left">File a Complaint</a>
 		    {% endif %}
                 </div>
+                <div class="col-4">
+                    {% if job.complete %}
+                    <a class="btn btn-hustle w-100" href="{% url 'reviews:create' worker_id=job.claimed_user.id %}">Review Worker</a>
+                    {% endif %}
+                </div>
 
                 {% if not job.accepted_bid %}
-                <div class="col-6">
+                <div class="col-4">
                     <form class="w-100" method="post" action="{{ url }}/jobs/cancel_job/{{ job.id }}">
                         {% csrf_token %}
                         <input class="w-100 btn btn-danger" type="submit" value="Cancel Job"></input>
                     </form>
                 </div>
                 {% else %}
-                <div class="col-6">
+                <div class="col-4">
                     <a class="w-100 btn text-light bg-secondary" popover="focus hover" title="Cannot Cancel" data-bs-content="You must cancel the accepted bid in order to cancel the job.">Cancel Job</a>
                 </div>
                 {% endif %}

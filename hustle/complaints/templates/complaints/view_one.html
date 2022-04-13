@@ -29,7 +29,7 @@
         {% endif %}
 	{% if user.is_superuser %}
       {% if complaint.state == "open" %}
-        <button class="btn btn-success mb-2" id="reimburse_button">Reimburse</button>
+        <button class="btn btn-hustle mb-2" id="reimburse_button">Reimburse</button>
         <a class="btn btn-outline-secondary mb-2" href="{{ url }}/complaints/close/{{ complaint.id }}">Mark As Closed</a>
       {% elif complaint.state == "closed" %}
         <a class="btn btn-outline-secondary mb-2" href="{{ url }}/complaints/open/{{ complaint.id }}">Re-Open</a>

@@ -73,3 +73,13 @@ body {
 .row {
   --bs-gutter-x: 0;
 }
+
+.scroll {
+  height:400px;
+  overflow-y: scroll;
+}
+
+.btn-outline-hustle {
+  color: #537f37;
+  border-color: #537f37;
+}
