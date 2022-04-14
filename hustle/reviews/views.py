@@ -20,7 +20,7 @@ def create(request, worker_id):
                 return redirect("jobs:view")
             messages.error(request, "There was invalid information in your review form. Please review and try again.")
         form = ReviewForm()
-        return render(request=request, template_name="reviews/create.html", context={"review_form":form, "worker": User.objects.get(pk=worker_id)})
+        return render(request=request, template_name="reviews/create.html", context={"form":form, "worker": User.objects.get(pk=worker_id)})
     else:
         return redirect("main:login")
 
@@ -31,3 +31,4 @@ def viewOne(request, review_id):
         return render(request, 'reviews/view_one.html', {'review': review})
     else:
         return redirect("main:login")
+
