@@ -26,7 +26,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for job in active_jobs %}
-		  {% include "jobs/job_card.html" with job=job %}
+		            {% include "jobs/job_card.html" with job=job %}
                   {% endfor %}
                 </div>
               </div>
@@ -42,7 +42,7 @@
               <div class="accordion-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                   {% for job in completed_jobs %}
-		  {% include "jobs/job_card.html" with job=job %}
+		            {% include "jobs/job_card.html" with job=job %}
                   {% endfor %}
                 </div>
               </div>
@@ -58,7 +58,7 @@
                   <div class="accordion-body">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                       {% for job in cancelled_jobs %}
-		      {% include "jobs/job_card.html" with job=job %}
+		                {% include "jobs/job_card.html" with job=job %}
                       {% endfor %}
                     </div>
                   </div>
