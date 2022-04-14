@@ -30,7 +30,7 @@ def create(request, job_id=None):
     else:
         get_object_or_404(Job, customer=request.user, id=job_id)
         form.fields['job'].queryset = Job.objects.filter(customer=request.user, id=job_id)
-    return render(request=request, template_name="complaints/create.html", context={"complaint_form":form})
+    return render(request=request, template_name="complaints/create.html", context={"form":form})
 
 
 @user_is_authenticated()
@@ -41,7 +41,12 @@ def view(request):
     open_complaints = Complaint.objects.filter(user=request.user, state='open')
     reimbursed_complaints = Complaint.objects.filter(user=request.user, state='reimbursed')
     closed_complaints = Complaint.objects.filter(user=request.user, state='closed')
-    return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": False})
+    
+    return render(request=request, template_name="complaints/view_all.html", context={"type": "Complaints", "item_groups": [
+            ("open", open_complaints),
+            ("reimbursed", reimbursed_complaints),
+            ("closed", closed_complaints),
+        ]})
 
 
 @user_is_authenticated()
@@ -71,7 +76,11 @@ def viewAll(request):
     open_complaints = Complaint.objects.filter(state='open')
     reimbursed_complaints = Complaint.objects.filter(state='reimbursed')
     closed_complaints = Complaint.objects.filter(state='closed')
-    return render(request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": True})
+    return render(request, template_name="complaints/view_all.html", context={"type": "Complaints", "item_groups": [
+            ("open", open_complaints),
+            ("reimbursed", reimbursed_complaints),
+            ("closed", closed_complaints),
+        ], "all": True})
 
 
 @user_is_authenticated()

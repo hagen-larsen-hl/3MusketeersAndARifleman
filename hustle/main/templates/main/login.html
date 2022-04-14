@@ -10,13 +10,6 @@
     <div class="card-header bg-hustle text-white">
       Hustle Login
     </div>
-    {% if messages %}
-    <ul class="list-group list-group-flush">
-        {% for message in messages %}
-        <li class="list-group-item{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
     <div class="card-body">
       <form method="POST">
         {% csrf_token %}

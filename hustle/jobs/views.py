@@ -24,27 +24,32 @@ def create_job_request(request):
             job.save()
             messages.success(request, "Job submitted successfully.")
             return redirect("jobs:view mine")
-        messages.error(request, errors)
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
     else:
         form = NewJobForm()
-    return render(request=request, template_name='jobs/job_form.html', context={"create_job_form": form})
+    return render(request=request, template_name='jobs/job_form.html', context={"form": form})
 
 
 @user_is_authenticated()
 def view(request):
+    active = Q(complete=False, cancelled=False)
+    completed = Q(complete=True)
+    cancelled = Q(cancelled=True)
     if request.user.groups.filter(name="Worker").exists():
-        active_jobs = Job.objects.filter(accepted_bid__user=request.user, complete=False, cancelled=False)
-        completed_jobs = Job.objects.filter(accepted_bid__user=request.user, complete=True)
-        cancelled_jobs = Job.objects.filter(accepted_bid__user=request.user, cancelled=True)
-        isWorker = True
+        user = Q(accepted_bid__user=request.user)
+        is_all = False
+    elif request.user.groups.filter(name="Owner").exists():
+        user = Q()
+        is_all = True
     else:
-        active_jobs = Job.objects.filter(customer=request.user, complete=False, cancelled=False)
-        completed_jobs = Job.objects.filter(customer=request.user, complete=True)
-        cancelled_jobs = Job.objects.filter(customer=request.user, cancelled=True)
-        isWorker = False
+        user = Q(customer=request.user)
+        is_all = False
     
-    return render(request=request, template_name="jobs/view_all.html", context={"active_jobs": active_jobs, "completed_jobs": completed_jobs, "isWorker": isWorker, "cancelled_jobs": cancelled_jobs})
+    return render(request=request, template_name="jobs/view_all.html", context={"type": "Jobs", "item_groups": [
+            ("active", Job.objects.filter(active & user)),
+            ("completed", Job.objects.filter(completed & user)),
+            ("cancelled", Job.objects.filter(cancelled & user)),
+        ], "all": is_all})
 
 @user_is_authenticated()
 @user_in_group("Worker")
@@ -60,25 +65,20 @@ def view_bids(request):
     complete_state = bid_accepted   &  bid_completed  & ~bid_rescinded
     active_state = ~accepted_state & ~rejected_state & ~complete_state
 
-    complete_bids = Bid.objects.filter(user=request.user, accepted_bid__isnull=False, selected_job__complete=True, selected_job__cancelled=False)
-    
-    return render(request=request, template_name="jobs/view_bids.html", context={"bids": [
+    return render(request=request, template_name="jobs/view_bids.html", context={"item_groups": [
             ("accepted", Bid.objects.filter(bid_from_user, accepted_state)),
             ("rejected", Bid.objects.filter(bid_from_user, rejected_state)),
             ("active", Bid.objects.filter(bid_from_user, active_state)),
             ("complete", Bid.objects.filter(bid_from_user, complete_state)),
-        ], "bid_count": Bid.objects.filter(user=request.user).count()})
+        ], "type": f"Bids ({Bid.objects.filter(user=request.user).count()})"})
 
 
 @user_is_authenticated()
 @user_in_group("Customer")
 def update_job_request(request, job_id):
-    try:
-        job = Job.objects.get(pk=job_id)
-    except Job.DoesNotExist:
-        return redirect("jobs:view")
+    job = get_object_or_404(Job, pk=job_id)
     if not job.customer == request.user or job.cancelled or job.complete:
-        return redirect("jobs:view")
+        return redirect("jobs:view job", job_id)
     if request.method == "POST":
         form = NewJobForm(request.POST)
         errors = form.errors
@@ -88,21 +88,18 @@ def update_job_request(request, job_id):
             job.customer = request.user
             job.id = job_id
             job.save()
-            messages.success(request, "Job submitted successfully.")
+            messages.success(request, "Job edit was successful.")
             return redirect("jobs:view job", job_id)
-        messages.error(request, errors)
         messages.error(request, "There was invalid information in your job form. Please review and try again.")
-    form = NewJobForm(instance=job)
-    return render(request=request, template_name='jobs/edit_job_form.html', context={"create_job_form": form})
+    else:
+        form = NewJobForm(instance=job)
+    return render(request=request, template_name='jobs/edit_job_form.html', context={"form": form})
 
 
 @user_is_authenticated()
 def view_job(request, job_id):
-    try:
-        job = Job.objects.get(pk=job_id)
-    except Job.DoesNotExist:
-        return redirect("jobs:view")
-    form = NewJobBidForm()
+    job = get_object_or_404(Job, pk=job_id)
+    form = NewJobBidForm(job=job)
     mform = MoneyForm()
     bids = Bid.objects.filter(selected_job_id=job_id)
     time_left = checkJobTime(job)
@@ -113,12 +110,9 @@ def view_job(request, job_id):
 @user_is_authenticated()
 @user_in_group("Worker")
 def bid_on_job(request, job_id):
-    try:
-        job = Job.objects.get(pk=job_id)
-    except Job.DoesNotExist:
-        return redirect("jobs:view")
+    job = get_object_or_404(Job, pk=job_id)
     if request.method == "POST":
-        form = NewJobBidForm(request.POST)
+        form = NewJobBidForm(request.POST, job=job)
         bid = form.instance
         bid.user = request.user
         bid.selected_job = job
@@ -127,7 +121,11 @@ def bid_on_job(request, job_id):
             bid.save()
             return redirect("jobs:view job", job_id)
         else:
-            messages.error(request, errors, extra_tags="BidFormError")
+            errors_l = []
+            for k,vl in errors.items():
+                for v in vl:
+                    errors_l.append(f"{k.replace('_', ' ')}: {v}")
+            messages.error(request, "</br>".join(errors_l))
     return redirect("jobs:view job", job_id)
 
 

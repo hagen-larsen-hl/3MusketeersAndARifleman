@@ -70,7 +70,7 @@ class NewUserForm(UserCreationForm):
         required_empties = []
         account_type = cleaned_data["account_type"]
         for k, v in cleaned_data.items():
-            if k.startswith(account_type[:1] + "_") and v == "":
+            if k.startswith(account_type[:1] + "_") and v == "" and k != "c_street2":
                 required_empties.append(k)
         for empty in required_empties:
             self.add_error(empty, ValidationError("This field is required."))
@@ -110,7 +110,7 @@ class NewUserForm(UserCreationForm):
             self.customer_data = {
                 "user": user,
                 "street": self.cleaned_data.get("c_street"),
-                "street2": self.cleaned_data.get("c_street2"),
+                "street2": self.cleaned_data.get("c_street2", ""),
                 "city": self.cleaned_data.get("c_city"),
                 "state": self.cleaned_data.get("c_state"),
                 "zip_code": self.cleaned_data.get("c_zip_code"),
@@ -149,7 +149,7 @@ class EditUserData(forms.ModelForm):
         exclude = ("user", "money",)
 class EditCustomerData(forms.ModelForm):
     street = forms.CharField(label="Address", max_length=128, widget=forms.TextInput(attrs={"placeholder": "Street Address*"}))
-    street2 = forms.CharField(label="", max_length=16, widget=forms.TextInput(attrs={"placeholder": "Address 2", "no-require": True}))
+    street2 = forms.CharField(label="", max_length=16, required=False, widget=forms.TextInput(attrs={"placeholder": "Address 2", "no-require": True}))
     city = forms.CharField(label="", max_length=32, widget=forms.TextInput(attrs={"style": "width:50%;float:left", "placeholder": "City*"}))
     state = us.forms.USStateField(label="", widget=forms.Select(choices=[('XX', "State*"), *us.us_states.US_STATES], attrs={"style": "width:50%;float:right"}))
     zip_code = us.forms.USZipCodeField(label="", widget=forms.TextInput(attrs={"placeholder": "Zip Code*"}))
