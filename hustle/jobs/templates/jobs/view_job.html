@@ -61,7 +61,25 @@
                     <a class="btn btn-hustle-secondary m-1" onclick="return confirm('Are you sure?')" href="{% url 'jobs:complete job' job.id %}">Mark Complete</a>
                 </div>
                 {% elif job.complete %}
-		<center><h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5></center>
+		            <center>
+                        <h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5>
+
+                        {% if user.customer_data %}
+
+                            <form method="post" action="{{ url }}/main/sendTip/{{ job.claimed_user.id }}/" >
+                                {% csrf_token %}
+
+                                <div>
+                                    <div class="m-2">
+                                        {{ money_form.money|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <input class="btn btn-hustle" type="submit" value="Give Optional Tip">
+                                </div>
+                            </form>
+                        {% endif %}
+                    </center>
                 {% endif %}
             </div>
             <div>
@@ -80,7 +98,7 @@
                                 {{ bid.bid }}
                             </td>
                             <td>
-                                {{ bid.user }}
+                                {% include 'main/user_link.html' with person=bid.user %}
                             </td>
                             <td>
                                 {{ bid.date_time }}

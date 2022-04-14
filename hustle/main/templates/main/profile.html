@@ -12,15 +12,16 @@
         </div>
         </div>
     </div>
+
     <div class="col-6">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
-                <h1 class="d-inline-block">Welcome, {{ user.first_name }}!</h1>
+                    <h1 class="d-inline-block">Welcome, {{ user.first_name }}!</h1>
 	        <span style="float: right" class="badge bg-primary">
                     {% if user.customer_data %}
 		    Customer
 		    {% elif user.worker_data %}
-		    Worker
+		        Worker
 		    {% elif user.is_superuser %}
 		    Owner / Superuser
 		    {% endif %}
@@ -116,7 +117,6 @@
     </div>
     {% endif %}
 </div>
-
 <script type="text/javascript">
     function carry_over(input_event, length, previous, next) {
         let value = input_event.target.value;

@@ -16,5 +16,6 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
     path("profile/<int:user_id>/", views.other_profile, name="otherProfile"),
     path("profile/<int:other_user_id>/b/", views.blacklist_user, name="blackListUser"),
+    path("sendTip/<int:user_id>/", views.send_tip, name="send tip"),
 
 ]
