@@ -1,3 +1,7 @@
+from django.shortcuts import render, redirect
+from reviews.models import Review
+
+from surveys.models import Survey
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, UserData, BlackList
 from .forms import NewUserForm, MoneyForm, EditUser, EditUserData, EditCustomerData, EditWorkerData
@@ -75,7 +79,9 @@ def get_profile_fields(user, show_sensitive=True):
 
 @user_is_authenticated()
 def profile(request):
-    return render(request, 'main/profile.html', {"profile_fields": get_profile_fields(request.user)})
+    surveys = Survey.objects.filter(customer=request.user).order_by('-create_date')
+    reviews = Review.objects.filter(worker=request.user).order_by('-create_date')
+    return render(request, 'main/profile.html', {"profile_fields": get_profile_fields(request.user), "surveys": surveys, "reviews": reviews})
 
 
 @user_is_authenticated()
@@ -86,13 +92,12 @@ def other_profile(request, user_id):
     current_user = User.objects.get(pk=user_id)
 
     l = BlackList.objects.filter(user=request.user, blacklisted_user=current_user)
-
     alreadyBlackListed = l.exists()
+    surveys = Survey.objects.filter(customer=current_user).order_by('-create_date')
+    reviews = Review.objects.filter(worker=current_user).order_by('-create_date')
 
 
-
-
-    return render(request, 'main/other_profile.html', {"view_user": current_user, "bl": alreadyBlackListed})
+    return render(request, 'main/other_profile.html', {"view_user": current_user, "bl": alreadyBlackListed, "surveys": surveys, "reviews": reviews})
 
 
 @user_is_authenticated()

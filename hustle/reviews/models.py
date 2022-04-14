@@ -5,7 +5,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Review(models.Model):    
-    worker = models.ForeignKey(User, on_delete=models.RESTRICT, default=1)
-    rating = models.IntegerField(default=3, validators=[MaxValueValidator(5), MinValueValidator(1)])
-    comments = models.TextField()
+    worker = models.ForeignKey(User, on_delete=models.RESTRICT, default=1, related_name="worker")
+    reviewer = models.ForeignKey(User, on_delete=models.RESTRICT, default=1, related_name="reviewer")
+    rating = models.IntegerField("Rating (1-5, with 1 being the worst and 5 being the best)", default=5, validators=[MaxValueValidator(5), MinValueValidator(1)])
+    comments = models.TextField("Additional Comments")
     create_date = models.DateField(default=timezone.now)

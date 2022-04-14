@@ -4,16 +4,22 @@
 
 {% load crispy_forms_tags %}
 
-<!--Write a Review-->
+<!--Complete a Survey-->
 <div class="d-flex justify-content-center container-sm">
     <div class="card m-5 w-50" >
         <div class="card-header bg-hustle text-white">
-            Reviewing {{ worker.first_name }} {{ worker.last_name }}
+            Complete Survey : Job #{{ job.id }}
         </div>
         <div class="card-body">
+            <p><strong>Note: </strong>For the ratings, please use the following scale:</p>
+            <ul>
+                <li>1 - Much shorter/easier than customer predicted</li>
+                <li>5 - As long/difficult as customer predicted</li>
+                <li>10 - Much longer/harder than customer predicted</li>
+            </ul>
             <form method="POST">
                 {% csrf_token %}
-                {% for field in review_form %}
+                {% for field in survey_form %}
                 <div class="fieldWrapper">
                     {{ field|as_crispy_field }}
                 </div>
