@@ -5,6 +5,7 @@ from main.models import UserData
 from .forms import ComplaintForm
 from .models import Complaint
 from jobs.models import Job
+from django.contrib.auth.models import User
 from django.contrib import messages
 from datetime import datetime
 from main.auth import user_is_authenticated, user_in_group, is_in_group
@@ -86,10 +87,17 @@ def viewAll(request):
 @user_in_group("Owner")
 def reimburse(request, complaint_id):
     complaint = get_object_or_404(Complaint, pk=complaint_id)
-    user = get_object_or_404(UserData, pk=complaint.user)
+    ownerData = User.objects.filter(groups__name="Owner").first().data
     if complaint.state != "reimbursed":
-        user.money += 200
-        user.save()
+        amount = complaint.job.accepted_bid.bid
+        ownerData.money -= amount
+        ownerData.save()
+
+        otherUser = complaint.job.customer
+
+        otherUser.data.money += amount
+        otherUser.data.save()
+
         complaint.state = "reimbursed"
         complaint.save()
     else:

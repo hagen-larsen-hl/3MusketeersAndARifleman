@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import NewJobForm, NewJobBidForm
+from main.forms import MoneyForm
 from django.contrib import messages
 from main.auth import user_passes_test, user_is_authenticated, user_in_group
 from .models import Job, Bid, JobType
@@ -99,13 +100,11 @@ def update_job_request(request, job_id):
 def view_job(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     form = NewJobBidForm(job=job)
+    mform = MoneyForm()
     bids = Bid.objects.filter(selected_job_id=job_id)
-    if job.accepted_bid is not None:
-        time_left = dateSubtractAndConvert(job.accepted_bid.date_time) - job.type.canceledTime
-    else:
-        time_left = 0
+    time_left = checkJobTime(job)
 
-    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids, "time_left": time_left})
+    return render(request=request, template_name='jobs/view_job.html', context={"job": job, "job_bid_form": form, "bids": bids, "time_left": time_left, "money_form": mform })
 
 
 @user_is_authenticated()
@@ -153,9 +152,9 @@ def complete_job(request,job_id):
     workerCut = job.accepted_bid.bid - ownerCut
     job.accepted_bid.user.data.money += workerCut
 
-    ownerData = User.objects.filter(is_superuser=True).first().data
-    ownerData.money += ownerCut
-    ownerData.save()
+    owner = User.objects.filter(groups__name="Owner").first()
+    owner.data.money += ownerCut
+    owner.data.save()
 
     job.customer.data.save()
     job.accepted_bid.user.data.save()
@@ -164,10 +163,17 @@ def complete_job(request,job_id):
 
 @user_is_authenticated()
 def cancel_accept_bid(request,job_id):
+
     job = Job.objects.get(pk=job_id)
-    job.claimed_user = None
-    job.accepted_bid = None
-    job.save()
+
+    time_left = checkJobTime(job)
+
+    if time_left > 0:
+        job.claimed_user = None
+        bid = job.accepted_bid
+        job.accepted_bid = None
+        bid.delete()
+        job.save()
 
     return redirect("jobs:view job", job.id)
 
@@ -263,6 +269,13 @@ def cancel_job(request, job_id):
         job.save()
         return redirect("jobs:view job", job_id)
 
+def checkJobTime(job):
+    if job.accepted_bid is not None:
+        time_left = dateSubtractAndConvert(job.accepted_bid.date_time) - job.type.canceledTime
+    else:
+        time_left = 0
+
+    return time_left
 
 def dateSubtractAndConvert(bidTime):
 
