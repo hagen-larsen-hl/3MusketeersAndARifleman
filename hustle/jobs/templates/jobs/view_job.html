@@ -39,7 +39,7 @@
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <h3 class="pb-4">Job Details</h3>
                     <p>Type: {{ job.type }}</p>
-                    <p>Time Estimate: {{ job.time_estimate }}</p>
+		    <p>Time Estimate: {{ job.time_estimate|floatformat:"-2" }} hour{{ job.time_estimate|pluralize }}</p>
                     <p>Completion Window Start: {{ job.completion_window_start }}</p>
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
                     <p>Zip Code: {{ job.zip_code }}</p>
@@ -49,7 +49,7 @@
                         {% if job.claimed_user %}
                         <div class="m-2">
                             <p>Accepted User: {% include 'main/user_link.html' with person=job.claimed_user %}</p>
-                            <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                            <p>Accepted Bid: ${{ job.accepted_bid.bid }}</p>
                             <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
                         </div>
                         {% endif %}
@@ -75,15 +75,19 @@
                         <tr>
                             <th>Bid</th>
                             <th>User</th>
+                            <th>Avg. Rating</th>
                             <th>Date/Time</th>
                         </tr>
                         {% for bid in bids %}
                         <tr>
                             <td>
-                                {{ bid.bid }}
+                                ${{ bid.bid }}
                             </td>
                             <td>
-                                {{ bid.user }}
+                                {% include 'main/user_link.html' with person=bid.user %}
+                            </td>
+                            <td>
+                                {{ bid.get_worker_rating|floatformat:"1" }} / 5.0
                             </td>
                             <td>
                                 {{ bid.date_time }}
