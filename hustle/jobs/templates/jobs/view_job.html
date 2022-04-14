@@ -42,7 +42,13 @@
                     <p>Time Estimate: {{ job.time_estimate }}</p>
                     <p>Completion Window Start: {{ job.completion_window_start }}</p>
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
-                    <p>Zip Code: {{ job.zip_code }}</p>
+                    {% if job.claimed_user != null and job.claimed_user == user %}
+                        <p>Address: {{ job.customer.customer_data.street }}, {{ job.customer.customer_data.street2 }}, {{ job.customer.customer_data.city }}, {{ job.customer.customer_data.state }}, {{ job.customer.customer_data.zip_code }}</p>
+                    {% else %}
+                        <p>Zip Code: {{ job.zip_code }}</p>
+                    {% endif %}
+
+
                 </div>
                 {% if job.claimed_user != null %}
                     <div class="m-2 bg-light p-4 rounded border border-hustle">
