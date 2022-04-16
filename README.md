@@ -18,9 +18,7 @@ Django will be used to create and manage the web apps database. Django uses pyth
 
 ## Build Instructions
 
-Clone the project in gitbash. ``` bash $ git clone https://github.com/yodarocks1/3MusketeersAndARifleman ```
-
-The next steps are subject to change.
+Clone the project into your desired location using: ``` git clone https://github.com/yodarocks1/3MusketeersAndARifleman ```
 
 - run ``` pip install django-localflavor ```
 
@@ -32,9 +30,19 @@ The next steps are subject to change.
 
 - run ``` python manage.py migrate ```
 
+- run ``` python manage.py loaddata ```
+
 - run ``` bash $ python manage.py runserver ```
 
-- Type localhost:8000\main in a browser to see the app running
+- Type `localhost:8000/main` in a browser to see the app running
+
+- Login using any of the below default credentials:
+
+  | Role     | Username  | Password |
+  |----------|-----------|----------|
+  | Owner    | superuser | caab2222 |
+  | Customer | customer  | caab2222 |
+  | Worker   | worker    | caab2222 |
 
 ## Unit Testing Instructions
 
@@ -67,8 +75,8 @@ that the app is running, open an internet browser and enter the address localhos
 
 ### Naming Conventions
 #### The naming conventions for variables, functions, classes, and everything else (subject to change)
-- Variables: normal_variableName, CONSTANT_VARIABLE_NAME
-- functions/methods: normal_functionName(), normal_MethodName()
+- Variables: normal_variable_name, CONSTANT_VARIABLE_NAME
+- functions/methods: normal_function_name(), normal_method_name()
 - classes: NormalClassName
 
 
