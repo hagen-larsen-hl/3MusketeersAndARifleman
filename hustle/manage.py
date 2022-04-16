@@ -15,7 +15,10 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    execute_from_command_line(sys.argv)
+    if len(sys.argv) == 2 and sys.argv[1] == "loaddata":
+        execute_from_command_line([sys.argv[0], "loaddata", "seeded_users.jsonl"])
+    else:
+        execute_from_command_line(sys.argv)
 
 
 if __name__ == '__main__':
