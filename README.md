@@ -26,6 +26,8 @@ The next steps are subject to change.
 
 - run ``` pip install django-crispy-forms ```
 
+- run ``` pip install Pillow ```
+
 - run ``` python manage.py makemigrations ```
 
 - run ``` python manage.py migrate ```
