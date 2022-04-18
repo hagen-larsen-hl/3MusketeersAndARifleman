@@ -6,7 +6,7 @@
 
 <div class="row my-4">
     {% if user.customer_data %}
-    <div class="col-3">
+    <div class="order-2 order-lg-0 col-12 col-sm-6 col-md-12 col-lg-3 mb-4">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
                 <h2 class="text-center">Surveys of My Jobs</h2>
@@ -40,7 +40,7 @@
         </div>
     </div>
     {% elif user.worker_data %}
-    <div class="col-3">
+    <div class="order-2 order-lg-0 col-12 col-sm-6 col-md-12 col-lg-3 mb-4">
         <div class="card text-center mx-2">
             <div class="card-header bg-brown text-white mb-4">
                 <h2>Reviews of Me</h2>
@@ -62,7 +62,7 @@
         </div>
     </div>
     {% endif %}
-    <div class="col-6">
+    <div class="col-12 col-md-8 col-lg-6 mb-4">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white">
                 <h1 class="d-inline-block">Welcome, {{ user.first_name }}!</h1>
@@ -110,7 +110,7 @@
             </div>
         </div>
     </div>
-    <div class="col-3">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
         <div class="card mx-2">
             <div class="card-header bg-brown text-white justify-content-center">
                 {% if user.data.money < 0 %} <h1 class="text-danger">
@@ -120,10 +120,10 @@
                         Balance: ${{ user.data.money }}
                     </h1>
             </div>
-            <div>
+            <center>
                 <a class="btn m-2 btn-hustle btn-lg" type="submit" href="/main/deposit">Deposit</a>
                 <a class="btn m-2 btn-danger btn-lg" type="submit" href="/main/withdraw">Withdraw</a>
-            </div>
+            </center>
         </div>
     </div>
 </div>
@@ -166,7 +166,6 @@
     </div>
     {% endif %}
 </div>
-
 <script type="text/javascript">
     function carry_over(input_event, length, previous, next) {
         let value = input_event.target.value;

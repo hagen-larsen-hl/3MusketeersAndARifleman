@@ -5,6 +5,7 @@ from main.models import UserData
 from .forms import ComplaintForm
 from .models import Complaint
 from jobs.models import Job
+from django.contrib.auth.models import User
 from django.contrib import messages
 from datetime import datetime
 from main.auth import user_is_authenticated, user_in_group, is_in_group
@@ -29,7 +30,7 @@ def create(request, job_id=None):
     else:
         get_object_or_404(Job, customer=request.user, id=job_id)
         form.fields['job'].queryset = Job.objects.filter(customer=request.user, id=job_id)
-    return render(request=request, template_name="complaints/create.html", context={"complaint_form":form})
+    return render(request=request, template_name="complaints/create.html", context={"form":form})
 
 
 @user_is_authenticated()
@@ -40,7 +41,12 @@ def view(request):
     open_complaints = Complaint.objects.filter(user=request.user, state='open')
     reimbursed_complaints = Complaint.objects.filter(user=request.user, state='reimbursed')
     closed_complaints = Complaint.objects.filter(user=request.user, state='closed')
-    return render(request=request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": False})
+    
+    return render(request=request, template_name="complaints/view_all.html", context={"type": "Complaints", "item_groups": [
+            ("open", open_complaints),
+            ("reimbursed", reimbursed_complaints),
+            ("closed", closed_complaints),
+        ]})
 
 
 @user_is_authenticated()
@@ -70,17 +76,28 @@ def viewAll(request):
     open_complaints = Complaint.objects.filter(state='open')
     reimbursed_complaints = Complaint.objects.filter(state='reimbursed')
     closed_complaints = Complaint.objects.filter(state='closed')
-    return render(request, template_name="complaints/view_all.html", context={"open_complaints": open_complaints, "reimbursed_complaints": reimbursed_complaints, "closed_complaints": closed_complaints, "all": True})
+    return render(request, template_name="complaints/view_all.html", context={"type": "Complaints", "item_groups": [
+            ("open", open_complaints),
+            ("reimbursed", reimbursed_complaints),
+            ("closed", closed_complaints),
+        ], "all": True})
 
 
 @user_is_authenticated()
 @user_in_group("Owner")
 def reimburse(request, complaint_id):
     complaint = get_object_or_404(Complaint, pk=complaint_id)
-    user = get_object_or_404(UserData, pk=complaint.user)
+    ownerData = User.objects.filter(groups__name="Owner").first().data
     if complaint.state != "reimbursed":
-        user.money += 200
-        user.save()
+        amount = complaint.job.accepted_bid.bid
+        ownerData.money -= amount
+        ownerData.save()
+
+        otherUser = complaint.job.customer
+
+        otherUser.data.money += amount
+        otherUser.data.save()
+
         complaint.state = "reimbursed"
         complaint.save()
     else:

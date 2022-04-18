@@ -56,10 +56,16 @@ class NewJobBidForm(forms.ModelForm):
         model = Bid
         fields = ["bid", "date_time"]
 
+    def __init__(self, *args, **kwargs):
+        self.job = kwargs.pop("job")
+        super(NewJobBidForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
         if cleaned_data.get("date_time") <= datetime.datetime.now(datetime.timezone.utc):
             self.add_error("date_time", ValidationError("Scheduled completion time cannot be in the past!"))
+        elif not (cleaned_data.get("date_time").date() <= self.job.completion_window_end and cleaned_data.get("date_time").date() >= self.job.completion_window_start):
+            self.add_error("date_time", ValidationError("Scheduled completion time must be within the completion window."))
         if cleaned_data.get("bid") < 0:
             self.add_error("bid", ValidationError("Bid amount must be a positive value"))
         return cleaned_data

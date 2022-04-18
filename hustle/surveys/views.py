@@ -9,7 +9,7 @@ from datetime import datetime
 
 from main.auth import user_is_authenticated
 
-@user_is_authenticated
+@user_is_authenticated()
 def create(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     if request.method == "POST":
@@ -26,7 +26,7 @@ def create(request, job_id):
     return render(request=request, template_name="surveys/create.html", context={"survey_form":form, "job": job})
 
 
-@user_is_authenticated
+@user_is_authenticated()
 def viewOne(request, review_id):
     survey = get_object_or_404(Survey, pk=review_id)
     return render(request, 'surveys/view_one.html', {'survey': survey})

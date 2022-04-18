@@ -14,6 +14,6 @@ if (reimburseButton != null) {
 
 cancelReimburseButton.addEventListener("click", function() {
     if (reimbursementInfo.style.display == "block") {
-        reimbursementInfo.style.display == "none";
+        reimbursementInfo.style.display = "none";
     }
 })

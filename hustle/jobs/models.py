@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 
 class JobType(models.Model):
@@ -58,4 +59,10 @@ class Bid(models.Model):
             return ("Rejected", "danger")
         else:
             return ("Active", "secondary")
+
+    def get_worker_rating(self):
+        if not (self.user.reviews and self.user.reviews.exists()):
+            return None
+        else:
+            return self.user.reviews.aggregate(Avg('rating'))["rating__avg"]
 

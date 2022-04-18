@@ -96,6 +96,7 @@ def other_profile(request, user_id):
     surveys = Survey.objects.filter(customer=current_user).order_by('-create_date')
     reviews = Review.objects.filter(worker=current_user).order_by('-create_date')
 
+
     return render(request, 'main/other_profile.html', {"view_user": current_user, "bl": alreadyBlackListed, "surveys": surveys, "reviews": reviews})
 
 
@@ -111,6 +112,23 @@ def deposit_money(request):
         form = MoneyForm()
     return render(request, 'main/profile.html', {"deposit": True, "money_form": form, "profile_fields": get_profile_fields(request.user)})
 
+@user_is_authenticated()
+def send_tip(request, user_id):
+    if request.method == "POST":
+        form = MoneyForm(request.POST)
+        errors = form.errors
+        if form.is_valid():
+            user = User.objects.get(pk=user_id)
+
+            request.user.data.money -= form.cleaned_data['money']
+            request.user.data.save()
+
+            user.data.money += form.cleaned_data['money']
+            user.data.save()
+            return redirect("jobs:view mine")
+        else:
+            messages.error(request, errors, extra_tags="BidFormError")
+    return redirect("jobs:view mine")
 
 @user_is_authenticated()
 def withdraw_money(request):
@@ -179,4 +197,3 @@ def blacklist_user(request, other_user_id):
         l.delete()
 
     return redirect("main:otherProfile", other_user_id)
-

@@ -21,7 +21,7 @@
     <title>View Job</title>
 </head>
 <div class="d-flex justify-content-center">
-    <div class="card w-50 m-5">
+    <div class="card col-12 col-md-9 col-lg-8 col-xl-7 col-xxl-6 m-5">
         <div class="card-header bg-hustle-secondary text-white">
             <h2 style="display: flex; flex-direction: row">
                 <h2 class="my-2" style="float: left">Job #{{ job.id }}</h2>
@@ -39,17 +39,23 @@
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <h3 class="pb-4">Job Details</h3>
                     <p>Type: {{ job.type }}</p>
-                    <p>Time Estimate: {{ job.time_estimate }}</p>
+		    <p>Time Estimate: {{ job.time_estimate|floatformat:"-2" }} hour{{ job.time_estimate|pluralize }}</p>
                     <p>Completion Window Start: {{ job.completion_window_start }}</p>
                     <p>Completion Window End: {{ job.completion_window_end }}</p>
-                    <p>Zip Code: {{ job.zip_code }}</p>
+                    {% if job.claimed_user != null and job.claimed_user == user %}
+                        <p>Address: {{ job.customer.customer_data.street }}, {{ job.customer.customer_data.street2 }}, {{ job.customer.customer_data.city }}, {{ job.customer.customer_data.state }}, {{ job.customer.customer_data.zip_code }}</p>
+                    {% else %}
+                        <p>Zip Code: {{ job.zip_code }}</p>
+                    {% endif %}
+
+
                 </div>
-                {% if job.claimed_user != null %}
+                {% if job.claimed_user %}
                     <div class="m-2 bg-light p-4 rounded border border-hustle">
                         {% if job.claimed_user %}
                         <div class="m-2">
                             <p>Accepted User: {% include 'main/user_link.html' with person=job.claimed_user %}</p>
-                            <p>Accepted Bid: {{ job.accepted_bid.bid }}</p>
+                            <p>Accepted Bid: ${{ job.accepted_bid.bid }}</p>
                             <p>Scheduled Time: {{ job.accepted_bid.date_time }}</p>
                         </div>
                         {% endif %}
@@ -61,10 +67,30 @@
                     <a class="btn btn-hustle-secondary m-1" onclick="return confirm('Are you sure?')" href="{% url 'jobs:complete job' job.id %}">Mark Complete</a>
                 </div>
                 {% elif job.complete %}
-		<center><h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5></center>
-                {% if job.accepted_bid.user == user %}
+
+		            <center>
+                        <h5 class="m-2 text-{{ job.get_state.1 }}">Job Completed</h5>
+
+                        {% if user.customer_data %}
+
+                            <form method="post" action="{{ url }}/main/sendTip/{{ job.claimed_user.id }}/" >
+                                {% csrf_token %}
+
+                                <div>
+                                    <div class="m-2">
+                                        {{ money_form.money|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <input class="btn btn-hustle" type="submit" value="Give Optional Tip">
+                                </div>
+                            </form>
+                        {% endif %}
+                    </center>
+          {% if job.accepted_bid.user == user %}
                 <center><a class="btn btn-hustle" id="survey" href="{{ url }}/surveys/create/{{ job.id }}">Complete Survey</a></center>
                 {% endif %}
+
                 {% endif %}
             </div>
             <div>
@@ -75,15 +101,19 @@
                         <tr>
                             <th>Bid</th>
                             <th>User</th>
+                            <th>Avg. Rating</th>
                             <th>Date/Time</th>
                         </tr>
                         {% for bid in bids %}
                         <tr>
                             <td>
-                                {{ bid.bid }}
+                                ${{ bid.bid }}
                             </td>
                             <td>
-                                {{ bid.user }}
+                                {% include 'main/user_link.html' with person=bid.user %}
+                            </td>
+                            <td>
+                                {{ bid.get_worker_rating|floatformat:"1" }} / 5.0
                             </td>
                             <td>
                                 {{ bid.date_time }}
@@ -113,13 +143,6 @@
                 <div class="m-2 bg-light p-4 rounded border border-hustle">
                     <div class="">
                         <h5>Submit A New Bid</h5>
-			{% if messages %}
-			{% for message in messages %}
-			{% if "BidFormError" in message.tags %}
-			<span>{{ message }}</span>
-			{% endif %}
-			{% endfor %}
-			{% endif %}
 			<form method="POST" action="{% url 'jobs:bid job' job.id %}">
                             {% csrf_token %}
                             <div class="fieldWrapper">
