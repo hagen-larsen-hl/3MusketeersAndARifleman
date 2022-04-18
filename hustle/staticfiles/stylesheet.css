@@ -115,3 +115,8 @@ body {
   border-color: #537f37;
 }
 
+.translucent {
+  opacity: 0.8 !important;
+  border-radius: 15px !important;
+  padding: 0px !important;
+}
